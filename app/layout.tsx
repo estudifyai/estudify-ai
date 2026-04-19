@@ -1,80 +1,50 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Instrument_Serif, Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-serif",
+  display: "swap",
+});
+
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://estudify.ai"),
-  title: {
-    default: "Estudify.ai — Estudia menos. Aprende más.",
-    template: "%s | Estudify.ai",
-  },
+  title: "Estudify.ai — Estudia menos. Aprende más.",
   description:
-    "La IA que convierte tus apuntes en resúmenes, flashcards y exámenes de práctica. Mide tu dominio real con Exam Readiness Score.",
-  keywords: [
-    "estudiar con IA",
-    "flashcards automáticas",
-    "resúmenes inteligentes",
-    "exámenes de práctica",
-    "tutor socrático",
-    "exam readiness score",
-    "estudify",
-    "app para estudiar",
-  ],
-  authors: [{ name: "Estudify.ai" }],
-  creator: "Estudify.ai",
+    "La plataforma de estudio con IA que convierte tus apuntes en material accionable. Mide tu dominio real con Exam Readiness Score. No hace tu tarea, te entrena para dominar el examen.",
   openGraph: {
-    type: "website",
-    locale: "es_MX",
+    title: "Estudify.ai",
+    description: "Estudia menos. Aprende más.",
     url: "https://estudify.ai",
-    siteName: "Estudify.ai",
-    title: "Estudify.ai — Estudia menos. Aprende más.",
-    description:
-      "La IA que convierte tus apuntes en resúmenes, flashcards y exámenes de práctica.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Estudify.ai — Estudia menos. Aprende más.",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Estudify.ai — Estudia menos. Aprende más.",
-    description:
-      "La IA que convierte tus apuntes en resúmenes, flashcards y exámenes de práctica.",
-    images: ["/og-image.png"],
-    creator: "@estudifyai",
-    site: "@estudifyai",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-    },
-  },
-  alternates: {
-    canonical: "https://estudify.ai",
+    locale: "es_MX",
+    type: "website",
   },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="es" className={inter.variable}>
+    <html
+      lang="es"
+      className={`${instrumentSerif.variable} ${geist.variable} ${jetbrainsMono.variable}`}
+    >
       <body className="antialiased">{children}</body>
     </html>
   );
