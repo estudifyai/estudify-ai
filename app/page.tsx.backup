@@ -1,0 +1,437 @@
+
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+
+export default function Home() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [email, setEmail] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  // Parallax effect - logo follows cursor
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 20;
+const y = (e.clientY / window.innerHeight - 0.5) * 20;
+      setMousePos({ x, y });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  // Scroll fade-up animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.classList.add("visible");
+        });
+      },
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll(".fade-up").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // Navbar shadow on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const nav = document.querySelector(".nav") as HTMLElement;
+      if (nav) {
+        nav.style.boxShadow =
+          window.scrollY > 50 ? "0 4px 24px rgba(0,0,0,0.2)" : "none";
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleSubmit = () => {
+    if (email && email.includes("@")) {
+      setShowModal(true);
+      setEmail("");
+    }
+  };
+
+  const features = [
+    { icon: "📝", title: "Resúmenes Inteligentes", desc: "Sube un PDF, foto o texto y obtén un resumen claro y estructurado en segundos." },
+    { icon: "🃏", title: "Flashcards Automáticas", desc: "Tarjetas de estudio con conceptos clave. Repasa con spaced repetition para retener más." },
+    { icon: "📋", title: "Exámenes de Práctica", desc: "Preguntas generadas de tu propio material. Sabe qué va a salir en tu examen." },
+    { icon: "🤖", title: "Tutor Socrático", desc: "No te da la respuesta: te guía con preguntas hasta que tú la descubras." },
+    { icon: "🎯", title: "Exam Readiness Score", desc: "Sabe cuánto dominas cada tema. Te dice cuándo estás listo para el examen." },
+    { icon: "👥", title: "Grupos de Clase", desc: "Comparte flashcards con tu grupo de WhatsApp. Estudien juntos, aprendan más." },
+  ];
+
+  const faqs = [
+    { q: "¿Estudify hace mi tarea?", a: "No. Estudify no genera respuestas para entregar. Te crea material de estudio para que tú domines el tema. Aprendes de verdad." },
+    { q: "¿Qué formatos acepta?", a: "PDF, imágenes de apuntes, texto pegado, y próximamente audio y video de clases grabadas." },
+    { q: "¿Sirve para prepa y universidad?", a: "Sí. Funciona para cualquier materia y nivel, desde secundaria hasta posgrado." },
+    { q: "¿Mis archivos son privados?", a: "100%. Encriptados en tránsito y reposo. Se eliminan después de 30 días. Tu información es solo tuya." },
+    { q: "¿Qué es el Exam Readiness Score?", a: "Una métrica que mide cuánto dominas cada tema basado en tu práctica real. Te dice cuándo estás listo." },
+    { q: "¿Puedo cancelar en cualquier momento?", a: "Sí. Sin contratos, sin letra chica. Cancelas cuando quieras." },
+  ];
+
+  return (
+    <>
+      {/* ══ NAVBAR ══ */}
+      src="/logo.png"
+      <nav
+  className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    scrolled
+      ? "backdrop-blur-xl bg-[rgba(7,6,20,0.85)] border-b border-[var(--border)]"
+      : "bg-transparent"
+  }`}
+>
+  <div className="max-w-[1120px] mx-auto px-6 h-[68px] flex items-center justify-between">
+    <a href="#" className="flex items-center gap-2.5 group">
+      <Image
+        src="/logo.png"
+        alt="Estudify"
+        width={30}
+        height={30}
+        className="rounded-md transition-transform group-hover:scale-105"
+      />
+      <span className="text-[15px] text-white tracking-tight font-medium">
+        estudify<span className="text-[var(--text2)]">.ai</span>
+      </span>
+    </a>
+    <div className="hidden md:flex items-center gap-9">
+      
+        href="#features
+
+      {/* ══ HERO ══ */}
+      <section className="relative pt-40 pb-24 px-6 overflow-hidden">
+        {/* Background glows */}        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-[20%] -right-[10%] w-[700px] h-[700px] rounded-full" style={{ background: "radial-gradient(circle, rgba(108,63,160,0.2), transparent 65%)" }} />
+          <div className="absolute -bottom-[30%] -left-[15%] w-[800px] h-[800px] rounded-full" style={{ background: "radial-gradient(circle, rgba(0,212,255,0.08), transparent 60%)" }} />
+          <div className="absolute top-[30%] left-[40%] w-[400px] h-[400px] rounded-full" style={{ background: "radial-gradient(circle, rgba(168,224,110,0.06), transparent 60%)" }} />
+        </div>
+
+        {/* Floating particles */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      
+        </div>
+
+        <div className="max-w-[1200px] mx-auto grid md:grid-cols-[1.1fr_0.9fr] gap-16 items-center relative z-10">
+          <div>
+            <div className="inline-flex items-center gap-2 bg-[rgba(108,63,160,0.15)] border border-[rgba(108,63,160,0.3)] px-4 py-2 rounded-full text-sm text-[var(--purple-light)] font-semibold mb-6">
+              <span className="w-2 h-2 bg-[var(--green)] rounded-full animate-pulse" />
+              Beta próximamente
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-5 tracking-tight">
+              Estudia menos.
+              <br />
+              <span className="bg-gradient-to-r from-[var(--grad-start)] via-[var(--grad-mid)] to-[var(--grad-end)] bg-clip-text text-transparent">
+                Aprende más.
+              </span>
+            </h1>
+            <p className="text-lg text-[var(--text2)] max-w-[520px] mb-9 leading-relaxed">
+              La IA que convierte tus clases, apuntes y temarios en resúmenes, flashcards y exámenes de práctica en segundos.
+            </p>
+            <div className="flex gap-4 flex-wrap">
+              <a href="#waitlist" className="bg-gradient-to-r from-[var(--purple)] to-[var(--purple-light)] text-white px-9 py-4 rounded-full font-bold text-lg shadow-[0_4px_24px_rgba(108,63,160,0.35)] hover:-translate-y-1 hover:shadow-[0_12px_36px_rgba(108,63,160,0.45)] transition-all">
+                Únete a la Beta Gratis
+              </a>
+              <a href="#how" className="border border-[var(--card-border)] text-[var(--text)] px-9 py-4 rounded-full font-semibold text-lg hover:border-[var(--purple-light)] hover:text-[var(--purple-light)] transition-all">
+                Cómo funciona
+              </a>
+            </div>
+            <div className="flex gap-10 mt-12 pt-8 border-t border-[var(--card-border)]">
+              {[
+                { num: "60s", label: "Tu primer resumen" },
+                { num: "100%", label: "Basado en tu material" },
+                { num: "0%", label: "Trampa" },
+              ].map((s) => (
+                <div key={s.label} className="text-center">
+                  <div className="font-[var(--font-outfit)] text-2xl font-extrabold bg-gradient-to-r from-[var(--grad-start)] to-[var(--grad-end)] bg-clip-text text-transparent">
+                    {s.num}
+                  </div>
+                  <div className="text-xs text-[var(--text2)] mt-1">{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Hero Logo with parallax */}
+          <div className="flex justify-center items-center relative order-first md:order-last">
+            <div className="relative">
+              <div className="absolute inset-[-60px] rounded-full blur-[40px] z-0" style={{ background: "radial-gradient(circle, rgba(108,63,160,0.25), transparent 70%)" }} />
+              <Image
+                src="/logo.png"
+                alt="Estudify.ai"
+                width={280}
+                height={280}
+                className="relative z-10 rounded-[40px] shadow-[0_30px_80px_rgba(108,63,160,0.3)]"
+                style={{
+                  animation: "float 5s ease-in-out infinite",
+                  transform: `translate(${mousePos.x}px, ${mousePos.y}px)`,
+                  transition: "transform 0.3s ease-out",
+                }}
+              />
+              {/* Orbiting rings */}
+              <div className="absolute inset-[-30px] rounded-full border border-[rgba(108,63,160,0.15)] z-0" style={{ animation: "spin 20s linear infinite" }} />
+              <div className="absolute inset-[-60px] rounded-full border border-[rgba(0,212,255,0.08)] z-0" style={{ animation: "spin 30s linear infinite reverse" }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ FEATURES ══ */}
+      <section id="features" className="py-32 px-6 relative">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--card-border)] to-transparent" />
+        <div className="text-center max-w-[700px] mx-auto mb-16 fade-up">
+          <div className="text-xs font-semibold text-[var(--purple-light)] uppercase tracking-[2px] mb-3">⚡ Funciones</div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Todo lo que necesitas para dominar tu examen</h2>
+          <p className="text-[var(--text2)]">Sube tu material y la IA hace el resto.</p>
+        </div>
+        <div className="max-w-[1200px] mx-auto grid md:grid-cols-3 gap-5">
+          {features.map((f, i) => (
+            <div key={i} className="fade-up group bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-8 transition-all duration-400 relative overflow-hidden hover:-translate-y-1.5 hover:bg-[rgba(255,255,255,0.06)] hover:border-[rgba(108,63,160,0.3)]">
+              <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[var(--grad-start)] via-[var(--grad-mid)] to-[var(--grad-end)] opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-5 bg-[rgba(108,63,160,0.12)] border border-[rgba(108,63,160,0.15)]">
+                {f.icon}
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">{f.title}</h3>
+              <p className="text-[var(--text2)] text-sm leading-relaxed">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══ HOW IT WORKS ══ */}
+      <section id="how" className="py-32 px-6" style={{ background: "linear-gradient(180deg, var(--bg2), var(--bg))" }}>
+        <div className="text-center max-w-[700px] mx-auto mb-16 fade-up">
+          <div className="text-xs font-semibold text-[var(--purple-light)] uppercase tracking-[2px] mb-3">🚀 3 pasos</div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Así de fácil funciona</h2>
+          <p className="text-[var(--text2)]">De tus apuntes a material de estudio en menos de 60 segundos.</p>
+        </div>
+        <div className="max-w-[1000px] mx-auto grid md:grid-cols-3 gap-10 relative">
+          <div className="hidden md:block absolute top-9 left-[16%] right-[16%] h-px bg-gradient-to-r from-[var(--purple)] to-[var(--cyan)] opacity-20" />
+          {[
+            { num: "1", emoji: "📤", title: "Sube tu material", desc: "PDF, foto de apuntes, texto, audio... Estudify acepta todo." },
+            { num: "2", emoji: "⚡", title: "La IA lo analiza", desc: "Extrae conceptos clave y genera resúmenes, flashcards y exámenes." },
+            { num: "3", emoji: "🏆", title: "Domina tu examen", desc: "Practica, sube tu Exam Readiness y llega preparado." },
+          ].map((s) => (
+            <div key={s.num} className="text-center relative z-10 fade-up">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[var(--purple)] to-[var(--purple-light)] text-white flex items-center justify-center font-extrabold text-xl mx-auto mb-6 shadow-[0_4px_20px_rgba(108,63,160,0.35)]">
+                {s.num}
+              </div>
+              <span className="text-4xl block mb-4">{s.emoji}</span>
+              <h3 className="text-lg font-bold text-white mb-2">{s.title}</h3>
+              <p className="text-[var(--text2)] text-sm">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══ EXAM READINESS ══ */}
+      <section className="py-24 px-6">
+        <div className="max-w-[1050px] mx-auto grid md:grid-cols-2 gap-16 items-center">
+          <div className="fade-up">
+            <div className="text-xs font-semibold text-[var(--purple-light)] uppercase tracking-[2px] mb-3">🎯 Exam Readiness</div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Sabe exactamente cuánto dominas</h2>
+            <p className="text-[var(--text2)] text-base leading-relaxed mb-5">No mide cuánto leíste, sino cuánto realmente aprendiste. Progreso real, no ilusiones.</p>
+            <ul className="space-y-3.5">
+              {["Score personalizado por tema y materia", "Identifica tus puntos débiles automáticamente", "Te dice cuándo estás listo para el examen real", "Motivación por logro, no por culpa"].map((item) => (
+                <li key={item} className="flex gap-3 items-start text-[var(--text2)] text-sm">
+                  <span className="w-5 h-5 min-w-[20px] rounded-full bg-gradient-to-r from-[var(--purple)] to-[var(--purple-light)] text-white flex items-center justify-center text-[10px] font-bold mt-0.5">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="fade-up bg-[var(--card)] border border-[var(--card-border)] rounded-3xl p-10 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[var(--grad-start)] via-[var(--grad-mid)] to-[var(--grad-end)]" />
+            <div className="text-sm text-[var(--text2)] mb-2">Biología Celular — Mitosis</div>
+            <div className="text-5xl font-black bg-gradient-to-r from-[var(--green)] to-[var(--cyan)] bg-clip-text text-transparent">87%</div>
+            <div className="text-sm text-[var(--text2)] mb-4">Exam Readiness Score</div>
+            <div className="bg-[rgba(255,255,255,0.06)] rounded-full h-3.5 overflow-hidden mb-5">
+              <div className="h-full rounded-full bg-gradient-to-r from-[var(--grad-start)] via-[var(--grad-mid)] to-[var(--cyan)] animate-[fillBar_2.5s_ease-out_forwards]" style={{ width: "0%" }} />
+            </div>
+            <div className="bg-[rgba(108,63,160,0.1)] border border-[rgba(108,63,160,0.2)] rounded-xl px-5 py-3 text-sm font-semibold text-[var(--purple-light)]">
+              💪 ¡Casi llegas! Estudia 5 min más y llegas al 100%
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ PRICING ══ */}
+      <section id="pricing" className="py-24 px-6" style={{ background: "linear-gradient(180deg, var(--bg2), var(--bg))" }}>
+        <div className="text-center max-w-[700px] mx-auto mb-16 fade-up">
+          <div className="text-xs font-semibold text-[var(--purple-light)] uppercase tracking-[2px] mb-3">💰 Precios</div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Simple y transparente</h2>
+          <p className="text-[var(--text2)]">Empieza gratis. Mejora cuando quieras.</p>
+        </div>
+        <div className="max-w-[1100px] mx-auto grid md:grid-cols-3 gap-5">
+          {/* Free */}
+          <div className="fade-up bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-9 transition-all hover:-translate-y-1 hover:border-[rgba(108,63,160,0.3)]">
+            <h3 className="font-bold text-xl text-white mb-2">Free</h3>
+            <div className="text-4xl font-black text-white">$0<span className="text-sm font-normal text-[var(--text2)]"> /mes</span></div>
+            <p className="text-sm text-[var(--text2)] mt-2 mb-6 min-h-[36px]">Para probar Estudify.</p>
+            <ul className="space-y-2.5 mb-7">
+              {["3 resúmenes al mes", "20 flashcards", "1 examen de práctica", "Exam Readiness básico"].map((f) => (
+                <li key={f} className="flex gap-2.5 items-center text-sm text-[var(--text)] border-b border-[rgba(255,255,255,0.04)] pb-2">
+                  <span className="text-[var(--green)] font-bold text-xs">✓</span>{f}
+                </li>
+              ))}
+            </ul>
+            <a href="#waitlist" className="block text-center py-3.5 rounded-full font-bold text-sm border border-[var(--card-border)] text-[var(--text)] hover:border-[var(--purple-light)] hover:text-[var(--purple-light)] transition-all">
+              Empezar gratis
+            </a>
+          </div>
+
+          {/* Pro */}
+          <div className="fade-up bg-[rgba(108,63,160,0.08)] border border-[rgba(108,63,160,0.5)] rounded-2xl p-9 relative shadow-[0_12px_40px_rgba(108,63,160,0.15)] transition-all hover:-translate-y-1">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[var(--purple)] to-[var(--purple-light)] text-white text-xs font-bold px-5 py-1.5 rounded-full">
+              Más Popular
+            </div>
+            <h3 className="font-bold text-xl text-white mb-2">Pro</h3>
+            <div className="text-4xl font-black text-white">$199<span className="text-sm font-normal text-[var(--text2)]"> MXN/mes</span></div>
+            <p className="text-sm text-[var(--text2)] mt-2 mb-6 min-h-[36px]">Para estudiantes que van en serio.</p>
+            <ul className="space-y-2.5 mb-7">
+              {["Resúmenes ilimitados", "Flashcards ilimitadas", "Exámenes ilimitados", "Tutor socrático", "Exam Readiness completo", "Generación prioritaria"].map((f) => (
+                <li key={f} className="flex gap-2.5 items-center text-sm text-[var(--text)] border-b border-[rgba(255,255,255,0.04)] pb-2">
+                  <span className="text-[var(--green)] font-bold text-xs">✓</span>{f}
+                </li>
+              ))}
+            </ul>
+            <a href="#waitlist" className="block text-center py-3.5 rounded-full font-bold text-sm bg-gradient-to-r from-[var(--purple)] to-[var(--purple-light)] text-white shadow-[0_4px_20px_rgba(108,63,160,0.3)] hover:shadow-[0_8px_32px_rgba(108,63,160,0.4)] hover:-translate-y-0.5 transition-all">
+              Únete a la Beta
+            </a>
+          </div>
+
+          {/* Team */}
+          <div className="fade-up bg-[var(--card)] border border-[var(--card-border)] rounded-2xl p-9 transition-all hover:-translate-y-1 hover:border-[rgba(108,63,160,0.3)]">
+            <h3 className="font-bold text-xl text-white mb-2">Team</h3>
+            <div className="text-4xl font-black text-white">$299<span className="text-sm font-normal text-[var(--text2)]"> MXN/mes</span></div>
+            <p className="text-sm text-[var(--text2)] mt-2 mb-6 min-h-[36px]">Hasta 5 estudiantes.</p>
+            <ul className="space-y-2.5 mb-7">
+              {["Todo lo de Pro", "5 estudiantes incluidos", "Grupos compartidos", "Progreso grupal", "Admin simple"].map((f) => (
+                <li key={f} className="flex gap-2.5 items-center text-sm text-[var(--text)] border-b border-[rgba(255,255,255,0.04)] pb-2">
+                  <span className="text-[var(--green)] font-bold text-xs">✓</span>{f}
+                </li>
+              ))}
+            </ul>
+            <a href="#waitlist" className="block text-center py-3.5 rounded-full font-bold text-sm border border-[var(--card-border)] text-[var(--text)] hover:border-[var(--purple-light)] hover:text-[var(--purple-light)] transition-all">
+              Conocer más
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ FAQ ══ */}
+      <section id="faq" className="py- px-6">
+        <div className="text-center max-w-[700px] mx-auto mb-16 fade-up">
+          <div className="text-xs font-semibold text-[var(--purple-light)] uppercase tracking-[2px] mb-3">❓ Preguntas frecuentes</div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Todo lo que quieres saber</h2>
+        </div>
+        <div className="max-w-[750px] mx-auto flex flex-col gap-2.5">
+          {faqs.map((faq, i) => (
+            <div key={i} className="bg-[var(--card)] border border-[var(--card-border)] rounded-[14px] overflow-hidden transition-all hover:border-[rgba(108,63,160,0.25)]">
+              <button
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                className="w-full px-6 py-5 flex justify-between items-center font-semibold text-white text-sm text-left"
+              >
+                {faq.q}
+                <span className={`text-xl text-[var(--purple-light)] transition-transform ${openFaq === i ? "rotate-45" : ""}`}>+</span>
+              </button>
+              <div className={`overflow-hidden transition-all duration-400 ${openFaq === i ? "max-h-48 px-6 pb-5" : "max-h-0"}`}>
+                <p className="text-[var(--text2)] text-sm leading-relaxed">{faq.a}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══ WAITLIST ══ */}
+      <section id="waitlist" className="py-32 px-6 relative">
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(108,63,160,0.12), transparent 70%)" }} />
+        <div className="max-w-[650px] mx-auto text-center relative z-10 fade-up">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">Únete a la beta de Estudify.ai</h2>
+          <p className="text-[var(--text2)] text-base mb-8">Sé de los primeros en estudiar con IA. Acceso anticipado + precio especial de por vida.</p>
+          <div className="flex gap-3 max-w-[480px] mx-auto flex-wrap justify-center">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+              placeholder="Tu correo electrónico"
+              className="flex-1 min-w-[220px] px-6 py-4 rounded-full border border-[var(--card-border)] bg-[rgba(255,255,255,0.04)] text-white text-base outline-none focus:border-[var(--purple-light)] transition-colors placeholder:text-[var(--text2)]"
+            />
+            <button
+              onClick={handleSubmit}
+              className="px-8 py-4 rounded-full bg-gradient-to-r from-[var(--purple)] to-[var(--purple-light)] text-white font-bold text-base hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(108,63,160,0.4)] transition-all"
+            >
+              Quiero acceso
+            </button>
+          </div>
+          <p className="text-xs text-[var(--text2)] mt-4">Sin spam. Solo actualizaciones importantes sobre el lanzamiento.</p>
+        </div>
+      </section>
+
+      {/* ══ FOOTER ══ */}
+      <footer className="border-t border-[var(--card-border)] text-[var(--text2)] py-16 px-6" style={{ background: "var(--bg2)" }}>
+        <div className="max-w-[1200px] mx-auto">
+          <div className="grid md:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-10">
+            <div>
+              <Image src="/logo.png" alt="Estudify" width={38} height={38} className="rounded-[10px] mb-3" />
+              <p className="text-sm leading-relaxed max-w-[260px]">Estudify.ai — La IA que te entrena para dominar tu examen. Estudia menos, aprende más.</p>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold text-sm mb-4">Producto</h4>
+              <a href="#features" className="block text-sm mb-2.5 hover:text-[var(--purple-light)] transition-colors">Funciones</a>
+              <a href="#how" className="block text-sm mb-2.5 hover:text-[var(--purple-light)] transition-colors">Cómo funciona</a>
+              <a href="#pricing" className="block text-sm mb-2.5 hover:text-[var(--purple-light)] transition-colors">Precios</a>
+              <a href="#faq" className="block text-sm mb-2.5 hover:text-[var(--purple-light)] transition-colors">FAQ</a>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold text-sm mb-4">Legal</h4>
+              <a href="#" className="block text-sm mb-2.5 hover:text-[var(--purple-light)] transition-colors">Privacidad</a>
+              <a href="#" className="block text-sm mb-2.5 hover:text-[var(--purple-light)] transition-colors">Términos</a>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold text-sm mb-4">Síguenos</h4>
+              <a href="https://www.instagram.com/estudify.ai" target="_blank" className="block text-sm mb-2.5 hover:text-[var(--purple-light)] transition-colors">Instagram</a>
+              <a href="https://www.tiktok.com/@estudify.ai" target="_blank" className="block text-sm mb-2.5 hover:text-[var(--purple-light)] transition-colors">TikTok</a>
+              <a href="https://x.com/estudifyai" target="_blank" className="block text-sm mb-2.5 hover:text-[var(--purple-light)] transition-colors">X (Twitter)</a>
+              <a href="https://youtube.com/@estudifyai" target="_blank" className="block text-sm mb-2.5 hover:text-[var(--purple-light)] transition-colors">YouTube</a>
+            </div>
+          </div>
+          <div className="border-t border-[var(--card-border)] pt-6 flex justify-between items-center flex-wrap gap-4">
+            <p className="text-xs">© 2026 Estudify.ai — Todos los derechos reservados.</p>
+            <div className="flex gap-3">
+              {[
+                { label: "IG", href: "https://www.instagram.com/estudify.ai" },
+                { label: "TT", href: "https://www.tiktok.com/@estudify.ai" },
+                { label: "X", href: "https://x.com/estudifyai" },
+                { label: "YT", href: "https://youtube.com/@estudifyai" },
+              ].map((s) => (
+                <a key={s.label} href={s.href} target="_blank" className="w-8 h-8 rounded-full bg-[rgba(255,255,255,0.06)] border border-[var(--card-border)] flex items-center justify-center text-xs text-[var(--text2)] hover:bg-[var(--purple)] hover:border-[var(--purple)] hover:text-white transition-all">
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* ══ MODAL ══ */}
+      {showModal && (
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.6)] z-[1000] flex items-center justify-center backdrop-blur-sm" onClick={() => setShowModal(false)}>
+          <div className="bg-[var(--bg3)] border border-[var(--card-border)] rounded-3xl p-12 text-center max-w-[440px] w-[90%] shadow-[0_24px_80px_rgba(0,0,0,0.4)] animate-[modalIn_0.4s_ease]" onClick={(e) => e.stopPropagation()}>
+            <span className="text-5xl block mb-4">🎉</span>
+            <h3 className="text-2xl font-extrabold text-white mb-2">¡Bienvenido al futuro del estudio!</h3>
+            <p className="text-[var(--text2)] mb-6">Ya estás en la lista. Te avisaremos cuando sea tu turno. 🚀</p>
+            <button onClick={() => setShowModal(false)} className="px-9 py-3.5 rounded-full bg-gradient-to-r from-[var(--purple)] to-[var(--purple-light)] text-white font-bold hover:shadow-[0_8px_24px_rgba(108,63,160,0.4)] transition-all">
+              ¡Genial!
+            </button>
+          </div>
+        </div>
+      )}
+
+    </>
+  );
+}
