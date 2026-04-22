@@ -1,58 +1,67 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUpRight, Plus } from "lucide-react";
+import { ArrowUpRight, Check, Sparkles } from "lucide-react";
+import Starfield from "./components/Starfield";
+import Logo from "./components/Logo";
 
 export default function Home() {
   return (
-    <main className="grain min-h-screen bg-ink text-paper">
-      <Nav />
-      <Hero />
-      <Marquee />
-      <Manifesto />
-      <Features />
-      <ReadinessSection />
-      <HowItWorks />
-      <Testimonials />
-      <Pricing />
-      <FAQ />
-      <Waitlist />
-      <Footer />
-    </main>
+    <>
+      <div className="cosmic-bg" />
+      <Starfield />
+
+      <main className="noise relative z-10 min-h-screen text-white">
+        <Nav />
+        <Hero />
+        <Marquee />
+        <Manifesto />
+        <Features />
+        <ReadinessSection />
+        <HowItWorks />
+        <Testimonials />
+        <Pricing />
+        <FAQ />
+        <Waitlist />
+        <Footer />
+      </main>
+    </>
   );
 }
 
 /* ═══════════════════ NAV ═══════════════════ */
 function Nav() {
   return (
-    <nav className="sticky top-0 z-50 border-b border-[var(--rule)] bg-ink/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-5 md:px-10">
-        <a href="#" className="flex items-center gap-2.5">
-          <LogoMark />
-          <span className="font-serif text-xl tracking-tight">Estudify</span>
-          <span className="mono text-[10px] text-[var(--muted)]">v0.1 BETA</span>
+    <nav className="sticky top-0 z-50 border-b border-[var(--border)] bg-black/60 backdrop-blur-2xl">
+      <div className="mx-auto flex max-w-[1320px] items-center justify-between px-6 py-4 md:px-10">
+        <a href="#" className="group flex items-center transition">
+          <Logo
+            variant="full"
+            size={32}
+            className="transition group-hover:opacity-90"
+          />
         </a>
 
-        <div className="mono hidden items-center gap-8 text-xs uppercase tracking-[0.2em] text-[var(--muted)] md:flex">
-          <a href="#features" className="hover:text-paper transition">
+        <div className="hidden items-center gap-10 text-[13px] font-medium text-[var(--text-dim)] md:flex">
+          <a href="#features" className="hover:text-white transition">
             Producto
           </a>
-          <a href="#readiness" className="hover:text-paper transition">
+          <a href="#readiness" className="hover:text-white transition">
             Readiness
           </a>
-          <a href="#pricing" className="hover:text-paper transition">
+          <a href="#pricing" className="hover:text-white transition">
             Precios
           </a>
-          <a href="#faq" className="hover:text-paper transition">
+          <a href="#faq" className="hover:text-white transition">
             FAQ
           </a>
         </div>
 
         <a
           href="#waitlist"
-          className="group mono inline-flex items-center gap-2 rounded-none border border-paper bg-paper px-4 py-2 text-xs uppercase tracking-wider text-ink transition hover:bg-[var(--accent)] hover:border-[var(--accent)]"
+          className="btn-primary group inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px]"
         >
-          Únete
+          Únete a la beta
           <ArrowUpRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </a>
       </div>
@@ -60,83 +69,89 @@ function Nav() {
   );
 }
 
-function LogoMark() {
-  return (
-    <div className="relative h-7 w-7">
-      <div className="absolute inset-0 border border-paper" />
-      <div className="absolute left-1 top-1 h-5 w-5 bg-[var(--accent)]" />
-      <div className="absolute left-2 top-2 h-3 w-3 border border-ink" />
-    </div>
-  );
-}
-
 /* ═══════════════════ HERO ═══════════════════ */
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="grid-paper absolute inset-0 opacity-40" />
-      <div className="relative mx-auto max-w-[1400px] px-6 pt-20 pb-32 md:px-10 md:pt-32">
-        {/* Metadata editorial */}
-        <div className="mono mb-16 flex items-center justify-between text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
-          <span>Nº 001 · Vol. I</span>
-          <span className="hidden md:inline">Abril 2026 · Beta pública</span>
-          <span>México / LATAM</span>
+    <section className="relative mx-auto max-w-[1320px] px-6 pt-20 pb-32 md:px-10 md:pt-28">
+      {/* Cabecera editorial */}
+      <div className="mono mb-20 flex items-center justify-between border-b border-[var(--border)] pb-6 text-[10px] uppercase tracking-[0.28em] text-[var(--text-muted)]">
+        <span>Nº 001 — Vol. 01</span>
+        <span className="hidden md:inline">Un laboratorio de estudio</span>
+        <span>MX · LATAM</span>
+      </div>
+
+      {/* Badge beta */}
+      <div className="reveal flex justify-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)]/80 px-4 py-1.5 text-[12px] text-[var(--text-dim)] backdrop-blur">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--brand-lime)] opacity-75 pulse-dot" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--brand-lime)]" />
+          </span>
+          <span className="mono uppercase tracking-[0.15em]">
+            Beta pública · Abril 2026
+          </span>
         </div>
+      </div>
 
-        <div className="grid gap-16 lg:grid-cols-12">
-          {/* Headline */}
-          <div className="lg:col-span-8">
-            <h1 className="reveal font-serif text-[clamp(3.5rem,10vw,9rem)] leading-[0.9] tracking-[-0.04em]">
-              Estudia
-              <br />
-              <span className="serif-ital text-[var(--accent)]">menos.</span>
-              <br />
-              Aprende
-              <br />
-              <span className="serif-ital">más.</span>
-            </h1>
-          </div>
+      {/* HERO principal: "estudify.ai" con gradiente del logo */}
+      <h1
+        className="reveal mt-10 text-center"
+        style={{ animationDelay: "0.1s" }}
+      >
+       <span className="editorial block text-[clamp(4.5rem,14vw,12rem)] leading-[0.92] tracking-[-0.04em] brand-gradient-text">
+          estudify.ai
+        </span>
+      </h1>
 
-          {/* Sidebar editorial */}
-          <div className="reveal lg:col-span-4 lg:pt-6" style={{ animationDelay: "0.2s" }}>
-            <div className="border-l border-[var(--rule-strong)] pl-6">
-              <p className="mono mb-6 text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
-                Premisa
-              </p>
-              <p className="text-lg leading-relaxed text-paper">
-                Una plataforma de estudio con inteligencia artificial que convierte
-                tus apuntes, clases y temarios en{" "}
-                <span className="serif-ital text-[var(--accent)]">material accionable</span>
-                —no en respuestas para copiar.
-              </p>
+      {/* Tagline editorial debajo */}
+      <p
+        className="reveal mt-10 text-center text-balance"
+        style={{ animationDelay: "0.2s" }}
+      >
+        <span className="editorial block text-[clamp(1.75rem,4vw,3rem)] text-white">
+          Estudia <span className="editorial-italic text-[var(--text-dim)]">menos</span>.
+          Aprende <span className="editorial-italic text-[var(--text-dim)]">más</span>.
+        </span>
+      </p>
 
-              <div className="mt-10 flex flex-col gap-3">
-                <a
-                  href="#waitlist"
-                  className="group mono inline-flex items-center justify-between border border-paper bg-paper px-5 py-4 text-xs uppercase tracking-wider text-ink transition hover:bg-[var(--accent)] hover:border-[var(--accent)]"
-                >
-                  Únete a la beta
-                  <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </a>
-                <a
-                  href="#how"
-                  className="mono inline-flex items-center justify-between border border-[var(--rule-strong)] px-5 py-4 text-xs uppercase tracking-wider text-paper transition hover:border-paper"
-                >
-                  Cómo funciona
-                  <span className="text-[var(--accent)]">↓</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
+      <p
+        className="reveal mx-auto mt-10 max-w-[640px] text-center text-balance text-[17px] leading-[1.55] text-[var(--text-dim)] md:text-xl"
+        style={{ animationDelay: "0.3s" }}
+      >
+        La plataforma de estudio con IA que convierte tus apuntes en material
+        accionable. No hace tu tarea —{" "}
+        <span className="text-white">te entrena para dominar el examen.</span>
+      </p>
 
-        {/* Datos editoriales debajo del headline */}
-        <div className="mt-24 grid grid-cols-2 gap-8 border-t border-[var(--rule-strong)] pt-8 md:grid-cols-4">
-          <DataPoint number="60s" label="Hasta el primer resumen" />
-          <DataPoint number="100%" label="Basado en tu material" />
-          <DataPoint number="0" label="Respuestas servidas" />
-          <DataPoint number="∞" label="Práctica con sentido" />
-        </div>
+      <div
+        className="reveal mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row"
+        style={{ animationDelay: "0.4s" }}
+      >
+        <a
+          href="#waitlist"
+          className="btn-primary group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-[14px]"
+        >
+          <Sparkles className="h-4 w-4" />
+          Únete a la beta
+          <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </a>
+        <a
+          href="#how"
+          className="group inline-flex items-center gap-2 rounded-full border border-[var(--border-strong)] bg-[var(--surface)]/60 px-7 py-3.5 text-[14px] text-white backdrop-blur transition hover:border-white/30 hover:bg-[var(--surface-2)]/80"
+        >
+          Ver cómo funciona
+          <span className="text-[var(--brand-lime)]">↓</span>
+        </a>
+      </div>
+
+      <div
+        className="reveal mx-auto mt-32 grid max-w-5xl grid-cols-2 gap-10 border-t border-[var(--border)] pt-12 md:grid-cols-4"
+        style={{ animationDelay: "0.5s" }}
+      >
+        <DataPoint number="60s" label="Primer resumen" />
+        <DataPoint number="100%" label="Basado en tu material" />
+        <DataPoint number="0" label="Respuestas servidas" />
+        <DataPoint number="∞" label="Práctica con sentido" />
       </div>
     </section>
   );
@@ -144,11 +159,9 @@ function Hero() {
 
 function DataPoint({ number, label }: { number: string; label: string }) {
   return (
-    <div>
-      <div className="font-serif text-5xl leading-none tracking-tight md:text-6xl">
-        {number}
-      </div>
-      <div className="mono mt-3 text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
+    <div className="text-left">
+      <div className="editorial text-6xl text-white md:text-7xl">{number}</div>
+      <div className="mono mt-4 text-[10px] uppercase tracking-[0.24em] text-[var(--text-muted)]">
         {label}
       </div>
     </div>
@@ -172,15 +185,18 @@ function Marquee() {
     "Filosofía",
   ];
   return (
-    <div className="overflow-hidden border-y border-[var(--rule-strong)] bg-[var(--ink-soft)] py-6">
-      <div className="marquee-track flex gap-12 whitespace-nowrap">
+    <div className="relative overflow-hidden border-y border-[var(--border)] bg-black/40 py-6 backdrop-blur">
+      <div className="marquee-track flex gap-16 whitespace-nowrap">
         {[...items, ...items].map((item, i) => (
           <span
             key={i}
-            className="serif-ital flex items-center gap-12 text-3xl text-[var(--muted)]"
+            className="editorial-italic flex items-center gap-16 text-3xl text-[var(--text-dim)]"
           >
             {item}
-            <span className="text-[var(--accent)]">✦</span>
+            <span
+              className="inline-block h-2 w-2 rounded-full brand-gradient-bg"
+              aria-hidden
+            />
           </span>
         ))}
       </div>
@@ -191,27 +207,46 @@ function Marquee() {
 /* ═══════════════════ MANIFESTO ═══════════════════ */
 function Manifesto() {
   return (
-    <section className="relative mx-auto max-w-[1400px] px-6 py-32 md:px-10 md:py-48">
+    <section className="relative mx-auto max-w-[1320px] px-6 py-32 md:px-10 md:py-48">
       <div className="grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-4">
-          <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
-            § 01 — Tesis
-          </p>
+          <SectionTag number="01" label="Tesis" />
         </div>
         <div className="lg:col-span-8">
-          <p className="font-serif text-3xl leading-[1.15] tracking-tight md:text-5xl md:leading-[1.1]">
+          <p className="editorial text-balance text-3xl leading-[1.2] md:text-5xl md:leading-[1.15]">
             Estudify no hace tu{" "}
-            <span className="serif-ital text-[var(--muted)] line-through decoration-[var(--accent)] decoration-2">
+            <span className="editorial-italic text-[var(--text-muted)] line-through decoration-[var(--brand-lime)] decoration-2">
               tarea
             </span>
             . Te entrena para{" "}
-            <span className="underline-accent text-ink">dominar el examen.</span>{" "}
-            Otras herramientas compiten por quién da mejores respuestas.{" "}
-            <span className="serif-ital">Nosotros, por quién forma mejores estudiantes.</span>
+            <span className="editorial-italic brand-gradient-text">
+              dominar el examen
+            </span>
+            .{" "}
+            <span className="mt-4 block text-[var(--text-dim)]">
+              Otras herramientas compiten por quién da mejores respuestas.{" "}
+              <span className="editorial-italic text-white">
+                Nosotros, por quién forma mejores estudiantes.
+              </span>
+            </span>
           </p>
         </div>
       </div>
     </section>
+  );
+}
+
+function SectionTag({ number, label }: { number: string; label: string }) {
+  return (
+    <div className="inline-flex items-center gap-3">
+      <span className="mono text-[10px] uppercase tracking-[0.3em] text-[var(--brand-lime)]">
+        {number}
+      </span>
+      <span className="h-px w-8 bg-[var(--brand-lime)]/40" />
+      <span className="mono text-[10px] uppercase tracking-[0.3em] text-[var(--text-dim)]">
+        {label}
+      </span>
+    </div>
   );
 }
 
@@ -251,19 +286,19 @@ function Features() {
   ];
 
   return (
-    <section id="features" className="border-t border-[var(--rule-strong)]">
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
-        <div className="grid grid-cols-12 border-b border-[var(--rule-strong)] py-10">
+    <section id="features" className="border-t border-[var(--border)]">
+      <div className="mx-auto max-w-[1320px] px-6 md:px-10">
+        <div className="grid grid-cols-12 gap-8 border-b border-[var(--border)] py-12">
           <div className="col-span-12 md:col-span-4">
-            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
-              § 02 — Producto
-            </p>
+            <SectionTag number="02" label="Producto" />
           </div>
-          <div className="col-span-12 mt-4 md:col-span-8 md:mt-0">
-            <h2 className="font-serif text-5xl leading-[0.95] tracking-tight md:text-6xl">
+          <div className="col-span-12 md:col-span-8">
+            <h2 className="editorial text-balance text-4xl md:text-7xl">
               Cinco piezas.
               <br />
-              <span className="serif-ital">Un solo objetivo.</span>
+              <span className="editorial-italic brand-gradient-text">
+                Un objetivo.
+              </span>
             </h2>
           </div>
         </div>
@@ -291,21 +326,22 @@ function FeatureRow({
 }) {
   return (
     <div
-      className={`group grid grid-cols-12 gap-6 py-10 transition hover:bg-[var(--ink-soft)] ${
-        !last ? "border-b border-[var(--rule)]" : ""
+      className={`group relative grid grid-cols-12 gap-6 py-12 transition ${
+        !last ? "border-b border-[var(--border)]" : ""
       }`}
     >
+      <div className="pointer-events-none absolute inset-0 -mx-6 bg-gradient-to-r from-transparent via-white/[0.015] to-transparent opacity-0 transition group-hover:opacity-100" />
       <div className="col-span-2 md:col-span-1">
-        <span className="mono text-sm text-[var(--muted)]">{n}</span>
+        <span className="mono text-sm text-[var(--text-muted)]">{n}</span>
       </div>
-      <div className="col-span-10 md:col-span-5">
-        <h3 className="font-serif text-3xl tracking-tight md:text-5xl">
+      <div className="col-span-10 md:col-span-6">
+        <h3 className="editorial text-4xl md:text-6xl">
           {title}{" "}
-          <span className="serif-ital text-[var(--accent)]">{italic}</span>
+          <span className="editorial-italic brand-gradient-text">{italic}</span>
         </h3>
       </div>
-      <div className="col-span-12 md:col-span-5 md:col-start-8">
-        <p className="text-base leading-relaxed text-[var(--muted)] md:text-lg">
+      <div className="col-span-12 md:col-span-5 md:pt-3">
+        <p className="text-[15px] leading-[1.65] text-[var(--text-dim)] md:text-[17px]">
           {body}
         </p>
       </div>
@@ -318,31 +354,33 @@ function ReadinessSection() {
   return (
     <section
       id="readiness"
-      className="relative border-t border-[var(--rule-strong)] bg-[var(--ink-soft)]"
+      className="relative border-t border-[var(--border)] bg-[var(--surface)]/40 backdrop-blur-sm"
     >
-      <div className="grid-paper-fine absolute inset-0 opacity-30" />
-      <div className="relative mx-auto max-w-[1400px] px-6 py-32 md:px-10 md:py-48">
-        <div className="grid grid-cols-12 gap-10">
-          {/* Left: manifiesto */}
+      <div className="relative mx-auto max-w-[1320px] px-6 py-32 md:px-10 md:py-48">
+        <div className="grid grid-cols-12 gap-10 lg:gap-20">
           <div className="col-span-12 lg:col-span-6">
-            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
-              § 03 — Métrica única
-            </p>
-            <h2 className="mt-8 font-serif text-5xl leading-[0.95] tracking-tight md:text-7xl">
+            <SectionTag number="03" label="Métrica única" />
+            <h2 className="editorial mt-10 text-balance text-4xl md:text-7xl">
               Deja de estudiar hasta{" "}
-              <span className="serif-ital text-[var(--muted)]">sentirte</span>{" "}
+              <span className="editorial-italic text-[var(--text-muted)]">
+                sentirte
+              </span>{" "}
               listo.
               <br />
-              Estudia hasta <span className="underline-accent text-ink">estarlo</span>.
+              Estudia hasta{" "}
+              <span className="editorial-italic brand-gradient-text">
+                estarlo
+              </span>
+              .
             </h2>
 
-            <p className="mt-10 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
+            <p className="mt-10 max-w-xl text-[15px] leading-[1.65] text-[var(--text-dim)] md:text-[17px]">
               Exam Readiness Score es la métrica que nadie más mide. No cuenta
               horas. No cuenta tarjetas vistas. Mide tu dominio real combinando
-              cuatro señales.
+              cuatro señales en tiempo real.
             </p>
 
-            <div className="mt-12 space-y-4 border-l border-[var(--rule-strong)] pl-6">
+            <div className="mt-12 space-y-4 border-l border-[var(--border-strong)] pl-6">
               <RangeRow range="90–100%" label="Listo para dominar" accent />
               <RangeRow range="70–89%" label="Casi llegas, repasa lo débil" />
               <RangeRow range="50–69%" label="En progreso, 5 preguntas más" />
@@ -350,7 +388,6 @@ function ReadinessSection() {
             </div>
           </div>
 
-          {/* Right: visual editorial */}
           <div className="col-span-12 lg:col-span-6">
             <ReadinessCard />
           </div>
@@ -372,72 +409,92 @@ function RangeRow({
   return (
     <div className="flex items-baseline gap-6">
       <span
-        className={`mono text-sm ${accent ? "text-[var(--accent)]" : "text-paper"}`}
+        className={`mono text-sm ${
+          accent ? "brand-gradient-text" : "text-white"
+        }`}
       >
         {range}
       </span>
-      <span className="serif-ital text-lg text-[var(--muted)]">{label}</span>
+      <span className="editorial-italic text-lg text-[var(--text-dim)]">
+        {label}
+      </span>
     </div>
   );
 }
 
 function ReadinessCard() {
   return (
-    <div className="relative border border-[var(--rule-strong)] bg-ink p-8 md:p-12">
-      {/* Encabezado tipo ficha */}
-      <div className="mono mb-10 flex items-center justify-between border-b border-[var(--rule)] pb-4 text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
+    <div className="surface relative p-8 md:p-10">
+      <div className="mono mb-10 flex items-center justify-between border-b border-[var(--border)] pb-4 text-[10px] uppercase tracking-[0.22em] text-[var(--text-dim)]">
         <span>Biología · Mitosis</span>
         <span>Estudiante #4421</span>
       </div>
 
-      {/* Score principal con círculo */}
       <div className="flex items-center gap-8">
-        <div className="relative h-32 w-32 flex-shrink-0">
+        <div className="relative h-36 w-36 flex-shrink-0">
           <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
+            <defs>
+              <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#C3F73A" />
+                <stop offset="33%" stopColor="#7EE8C6" />
+                <stop offset="66%" stopColor="#5EC8E8" />
+                <stop offset="100%" stopColor="#8B7FD8" />
+              </linearGradient>
+              <filter id="scoreGlow">
+                <feGaussianBlur stdDeviation="1.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
             <circle
               cx="50"
               cy="50"
-              r="45"
+              r="44"
               fill="none"
-              stroke="var(--rule-strong)"
-              strokeWidth="2"
+              stroke="rgba(255,255,255,0.08)"
+              strokeWidth="3"
             />
             <circle
               cx="50"
               cy="50"
-              r="45"
+              r="44"
               fill="none"
-              stroke="var(--accent)"
-              strokeWidth="2"
-              strokeDasharray="283"
-              strokeDashoffset="79"
-              className="draw-circle"
-              style={{ strokeDashoffset: 283 - (283 * 72) / 100 }}
+              stroke="url(#scoreGrad)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeDasharray="276.46"
+              strokeDashoffset={276.46 - (276.46 * 72) / 100}
+              filter="url(#scoreGlow)"
+              style={{
+                transition: "stroke-dashoffset 1.8s cubic-bezier(0.16,1,0.3,1)",
+              }}
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="font-serif text-4xl tracking-tight">72<span className="text-[var(--muted)]">%</span></span>
+            <span className="editorial text-5xl">
+              72<span className="text-[var(--text-muted)]">%</span>
+            </span>
           </div>
         </div>
         <div className="flex-1">
-          <p className="mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)]">
+          <p className="mono text-[10px] uppercase tracking-[0.22em] text-[var(--brand-lime)]">
             Estado
           </p>
-          <p className="serif-ital mt-2 text-2xl leading-tight">
+          <p className="editorial-italic mt-2 text-xl leading-tight md:text-2xl">
             Casi listo. Cinco minutos en ciclo celular y subes a 85%.
           </p>
         </div>
       </div>
 
-      {/* Barras */}
-      <div className="mt-12 space-y-6">
+      <div className="mt-10 space-y-5">
         <BarRow label="Fases de la mitosis" value={95} />
         <BarRow label="División celular" value={82} />
         <BarRow label="Ciclo celular" value={58} weak />
       </div>
 
-      {/* Firma editorial */}
-      <div className="mono mt-10 flex items-center justify-between border-t border-[var(--rule)] pt-4 text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
+      <div className="mono mt-10 flex items-center justify-between border-t border-[var(--border)] pt-4 text-[10px] uppercase tracking-[0.22em] text-[var(--text-muted)]">
         <span>Actualizado hace 2 min</span>
         <span>ERS v1.0</span>
       </div>
@@ -457,14 +514,22 @@ function BarRow({
   return (
     <div>
       <div className="flex items-baseline justify-between">
-        <span className="serif-ital text-lg text-paper">{label}</span>
-        <span className={`mono text-sm ${weak ? "text-[var(--accent)]" : "text-paper"}`}>
+        <span className="editorial-italic text-base text-white md:text-lg">
+          {label}
+        </span>
+        <span
+          className={`mono text-sm ${
+            weak ? "brand-gradient-text" : "text-[var(--text-dim)]"
+          }`}
+        >
           {value}%
         </span>
       </div>
-      <div className="mt-2 h-[2px] w-full bg-[var(--rule-strong)]">
+      <div className="mt-2 h-[2px] w-full bg-[var(--border)]">
         <div
-          className={`h-full ${weak ? "bg-[var(--accent)]" : "bg-paper"} transition-all`}
+          className={`h-full transition-all duration-1000 ${
+            weak ? "brand-gradient-bg" : "bg-white/40"
+          }`}
           style={{ width: `${value}%` }}
         />
       </div>
@@ -492,37 +557,44 @@ function HowItWorks() {
     },
   ];
   return (
-    <section id="how" className="border-t border-[var(--rule-strong)]">
-      <div className="mx-auto max-w-[1400px] px-6 py-32 md:px-10 md:py-48">
-        <div className="grid grid-cols-12 gap-10">
+    <section id="how" className="border-t border-[var(--border)]">
+      <div className="mx-auto max-w-[1320px] px-6 py-32 md:px-10 md:py-48">
+        <div className="grid grid-cols-12 gap-10 lg:gap-20">
           <div className="col-span-12 lg:col-span-4">
-            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
-              § 04 — Proceso
-            </p>
-            <h2 className="mt-8 font-serif text-5xl leading-[0.95] tracking-tight md:text-7xl">
+            <SectionTag number="04" label="Proceso" />
+            <h2 className="editorial mt-10 text-balance text-5xl md:text-7xl">
               Tres
               <br />
-              <span className="serif-ital">pasos.</span>
+              <span className="editorial-italic brand-gradient-text">
+                pasos.
+              </span>
               <br />
               Sin vueltas.
             </h2>
           </div>
 
           <div className="col-span-12 lg:col-span-8">
-            <div className="relative border-l border-[var(--rule-strong)]">
+            <div className="relative border-l border-[var(--border-strong)]">
               {steps.map((s, i) => (
                 <div
                   key={i}
                   className="relative pl-10 pb-16 last:pb-0 md:pl-16"
                 >
-                  <div className="absolute left-[-9px] top-0 h-4 w-4 rotate-45 bg-[var(--accent)]" />
+                  <div
+                    className="absolute left-[-6px] top-2 h-3 w-3 rounded-full brand-gradient-bg"
+                    style={{
+                      boxShadow: "0 0 20px rgba(195,247,58,0.6)",
+                    }}
+                  />
                   <div className="flex items-baseline gap-6">
-                    <span className="mono text-sm text-[var(--muted)]">{s.n}</span>
-                    <h3 className="font-serif text-4xl tracking-tight md:text-6xl">
+                    <span className="mono text-sm text-[var(--text-muted)]">
+                      {s.n}
+                    </span>
+                    <h3 className="editorial text-4xl tracking-tight md:text-6xl">
                       {s.title}
                     </h3>
                   </div>
-                  <p className="mt-4 max-w-lg text-lg leading-relaxed text-[var(--muted)] md:pl-12">
+                  <p className="mt-4 max-w-lg text-[15px] leading-[1.65] text-[var(--text-dim)] md:pl-12 md:text-[17px]">
                     {s.body}
                   </p>
                 </div>
@@ -556,38 +628,42 @@ function Testimonials() {
   ];
 
   return (
-    <section className="border-t border-[var(--rule-strong)] bg-[var(--ink-soft)]">
-      <div className="mx-auto max-w-[1400px] px-6 py-32 md:px-10 md:py-48">
-        <div className="grid grid-cols-12">
-          <div className="col-span-12 mb-16 lg:col-span-4">
-            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
-              § 05 — Voces
-            </p>
-            <h2 className="mt-8 font-serif text-5xl leading-[0.95] tracking-tight md:text-6xl">
+    <section className="border-t border-[var(--border)] bg-[var(--surface)]/40 backdrop-blur-sm">
+      <div className="mx-auto max-w-[1320px] px-6 py-32 md:px-10 md:py-48">
+        <div className="grid grid-cols-12 gap-10 lg:gap-20">
+          <div className="col-span-12 mb-8 lg:col-span-4 lg:mb-0">
+            <SectionTag number="05" label="Voces" />
+            <h2 className="editorial mt-10 text-5xl md:text-7xl">
               Beta
               <br />
-              <span className="serif-ital">testers.</span>
+              <span className="editorial-italic brand-gradient-text">
+                testers.
+              </span>
             </h2>
           </div>
           <div className="col-span-12 lg:col-span-8">
-            <div className="grid gap-0 border-t border-[var(--rule-strong)]">
+            <div className="border-t border-[var(--border)]">
               {items.map((t, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-12 gap-6 border-b border-[var(--rule-strong)] py-10"
+                  className="grid grid-cols-12 gap-6 border-b border-[var(--border)] py-12"
                 >
                   <div className="col-span-12 md:col-span-8">
-                    <p className="font-serif text-2xl leading-snug tracking-tight md:text-3xl">
-                      <span className="serif-ital text-[var(--accent)]">"</span>
+                    <p className="editorial text-2xl leading-[1.3] md:text-3xl">
+                      <span className="editorial-italic brand-gradient-text text-4xl leading-none">
+                        &ldquo;
+                      </span>
                       {t.text}
-                      <span className="serif-ital text-[var(--accent)]">"</span>
+                      <span className="editorial-italic brand-gradient-text text-4xl leading-none">
+                        &rdquo;
+                      </span>
                     </p>
                   </div>
                   <div className="col-span-12 md:col-span-4 md:text-right">
-                    <p className="mono text-xs uppercase tracking-wider text-paper">
+                    <p className="mono text-xs uppercase tracking-wider text-white">
                       {t.name}
                     </p>
-                    <p className="mono mt-1 text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
+                    <p className="mono mt-1 text-[10px] uppercase tracking-[0.22em] text-[var(--text-muted)]">
                       {t.role}
                     </p>
                   </div>
@@ -646,71 +722,68 @@ function Pricing() {
   ];
 
   return (
-    <section id="pricing" className="border-t border-[var(--rule-strong)]">
-      <div className="mx-auto max-w-[1400px] px-6 py-32 md:px-10 md:py-48">
-        <div className="grid grid-cols-12 border-b border-[var(--rule-strong)] pb-10">
+    <section id="pricing" className="border-t border-[var(--border)]">
+      <div className="mx-auto max-w-[1320px] px-6 py-32 md:px-10 md:py-48">
+        <div className="grid grid-cols-12 gap-8 border-b border-[var(--border)] pb-12">
           <div className="col-span-12 md:col-span-4">
-            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
-              § 06 — Precios
-            </p>
+            <SectionTag number="06" label="Precios" />
           </div>
-          <div className="col-span-12 mt-4 md:col-span-8 md:mt-0">
-            <h2 className="font-serif text-5xl leading-[0.95] tracking-tight md:text-7xl">
+          <div className="col-span-12 md:col-span-8">
+            <h2 className="editorial text-4xl md:text-7xl">
               Simple.
               <br />
-              <span className="serif-ital">Sin sorpresas.</span>
+              <span className="editorial-italic brand-gradient-text">
+                Sin sorpresas.
+              </span>
             </h2>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-0 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 pt-12 md:grid-cols-3">
           {plans.map((p, i) => (
             <div
               key={i}
-              className={`relative border-b border-[var(--rule-strong)] p-10 md:border-b-0 ${
-                i < 2 ? "md:border-r md:border-[var(--rule-strong)]" : ""
-              } ${p.featured ? "bg-[var(--ink-soft)]" : ""}`}
+              className={`relative rounded-[20px] p-8 ${
+                p.featured ? "brand-border bg-[var(--surface-2)]" : "surface"
+              }`}
             >
               {p.featured && (
-                <div className="absolute right-10 top-10">
-                  <div className="mono inline-block bg-[var(--accent)] px-2 py-1 text-[9px] uppercase tracking-widest text-ink">
+                <div className="absolute -top-3 left-8">
+                  <div className="btn-primary mono inline-flex items-center gap-1 rounded-full px-3 py-1 text-[9px] uppercase tracking-[0.2em]">
+                    <Sparkles className="h-2.5 w-2.5" />
                     Recomendado
                   </div>
                 </div>
               )}
 
-              <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
+              <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--text-dim)]">
                 {p.tag}
               </p>
-              <h3 className="mt-3 font-serif text-4xl tracking-tight">
-                {p.name}
-              </h3>
+              <h3 className="editorial mt-3 text-4xl">{p.name}</h3>
 
-              <div className="mt-8 flex items-baseline gap-2">
-                <span className="mono text-sm text-[var(--muted)]">$</span>
-                <span className="font-serif text-7xl leading-none tracking-tight">
-                  {p.price}
-                </span>
+              <div className="mt-8 flex items-baseline gap-1">
+                <span className="mono text-sm text-[var(--text-muted)]">$</span>
+                <span className="editorial text-7xl">{p.price}</span>
               </div>
-              <p className="mono mt-2 text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
+              <p className="mono mt-2 text-[10px] uppercase tracking-[0.22em] text-[var(--text-muted)]">
                 {p.currency}
               </p>
 
-              <div className="mt-10 space-y-3 border-t border-[var(--rule)] pt-6">
+              <div className="mt-8 space-y-3 border-t border-[var(--border)] pt-6">
                 {p.features.map((f, j) => (
                   <div key={j} className="flex items-start gap-3">
-                    <Plus className="mt-1 h-3 w-3 flex-shrink-0 text-[var(--accent)]" />
-                    <span className="text-sm text-paper">{f}</span>
+                    <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-[var(--brand-lime)]" />
+                    <span className="text-[14px] text-white">{f}</span>
                   </div>
                 ))}
               </div>
 
               <a
                 href="#waitlist"
-                className={`group mono mt-10 inline-flex w-full items-center justify-between border px-5 py-4 text-xs uppercase tracking-wider transition ${
+                className={`group mt-10 inline-flex w-full items-center justify-center gap-1.5 rounded-full px-5 py-3.5 text-sm font-semibold transition ${
                   p.featured
-                    ? "border-paper bg-paper text-ink hover:bg-[var(--accent)] hover:border-[var(--accent)]"
-                    : "border-[var(--rule-strong)] text-paper hover:border-paper"
+                    ? "btn-primary"
+                    : "border border-[var(--border-strong)] bg-[var(--surface)] text-white hover:border-white/30 hover:bg-[var(--surface-hover)]"
                 }`}
               >
                 Empezar
@@ -756,33 +829,34 @@ function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="border-t border-[var(--rule-strong)] bg-[var(--ink-soft)]">
-      <div className="mx-auto max-w-[1400px] px-6 py-32 md:px-10 md:py-48">
-        <div className="grid grid-cols-12 gap-10">
+    <section
+      id="faq"
+      className="border-t border-[var(--border)] bg-[var(--surface)]/40 backdrop-blur-sm"
+    >
+      <div className="mx-auto max-w-[1320px] px-6 py-32 md:px-10 md:py-48">
+        <div className="grid grid-cols-12 gap-10 lg:gap-20">
           <div className="col-span-12 lg:col-span-4">
-            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
-              § 07 — Dudas
-            </p>
-            <h2 className="mt-8 font-serif text-5xl leading-[0.95] tracking-tight md:text-7xl">
+            <SectionTag number="07" label="Dudas" />
+            <h2 className="editorial mt-10 text-5xl md:text-7xl">
               Preguntas
               <br />
-              <span className="serif-ital">frecuentes.</span>
+              <span className="editorial-italic brand-gradient-text">
+                frecuentes.
+              </span>
             </h2>
           </div>
           <div className="col-span-12 lg:col-span-8">
-            <div className="border-t border-[var(--rule-strong)]">
+            <div className="border-t border-[var(--border)]">
               {faqs.map((f, i) => (
                 <button
                   key={i}
                   onClick={() => setOpen(open === i ? null : i)}
-                  className="block w-full border-b border-[var(--rule-strong)] py-6 text-left transition"
+                  className="block w-full border-b border-[var(--border)] py-6 text-left transition hover:bg-white/[0.015]"
                 >
                   <div className="flex items-baseline justify-between gap-6">
-                    <span className="font-serif text-xl tracking-tight md:text-2xl">
-                      {f.q}
-                    </span>
+                    <span className="editorial text-xl md:text-2xl">{f.q}</span>
                     <span
-                      className={`mono text-2xl text-[var(--accent)] transition-transform ${
+                      className={`text-2xl text-[var(--brand-lime)] transition-transform duration-500 ${
                         open === i ? "rotate-45" : ""
                       }`}
                     >
@@ -790,7 +864,7 @@ function FAQ() {
                     </span>
                   </div>
                   {open === i && (
-                    <p className="mt-4 max-w-2xl text-base leading-relaxed text-[var(--muted)]">
+                    <p className="mt-4 max-w-2xl text-[15px] leading-[1.65] text-[var(--text-dim)]">
                       {f.a}
                     </p>
                   )}
@@ -819,27 +893,36 @@ function Waitlist() {
   return (
     <section
       id="waitlist"
-      className="relative overflow-hidden border-t border-[var(--rule-strong)]"
+      className="relative overflow-hidden border-t border-[var(--border)]"
     >
-      <div className="grid-paper absolute inset-0 opacity-40" />
-      <div className="relative mx-auto max-w-[1400px] px-6 py-32 md:px-10 md:py-48">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 50% 100%, rgba(195,247,58,0.08) 0%, transparent 60%)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-[1320px] px-6 py-32 md:px-10 md:py-48">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
-            § 08 — Beta
-          </p>
-          <h2 className="mt-8 font-serif text-6xl leading-[0.95] tracking-tight md:text-[8rem]">
+          <SectionTag number="08" label="Beta privada" />
+
+          <h2 className="editorial mt-10 text-balance text-6xl md:text-[8rem]">
             Sé de los
             <br />
-            <span className="serif-ital text-[var(--accent)]">primeros.</span>
+            <span className="editorial-italic brand-gradient-text">
+              primeros
+            </span>
+            .
           </h2>
-          <p className="mx-auto mt-10 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
-            Los primeros 500 reciben <span className="text-paper">3 meses Pro gratis</span> y
-            acceso prioritario a la beta cerrada.
+          <p className="mx-auto mt-10 max-w-xl text-[15px] leading-[1.65] text-[var(--text-dim)] md:text-[17px]">
+            Sé parte de la próxima generación de estudio.
+            <span className="text-white"> Acceso anticipado para los que se unan ahora.</span>
           </p>
 
           {sent ? (
-            <div className="mono mt-12 inline-flex items-center gap-3 border border-[var(--accent)] bg-[var(--accent)] px-8 py-4 text-xs uppercase tracking-widest text-ink">
-              <span>✓</span> Te avisamos pronto
+            <div className="mono mt-12 inline-flex items-center gap-3 rounded-full border border-[var(--brand-lime)] bg-[var(--brand-lime-glow)] px-6 py-3 text-sm uppercase tracking-widest text-[var(--brand-lime)]">
+              <Check className="h-4 w-4" /> Te avisamos pronto
             </div>
           ) : (
             <form
@@ -852,12 +935,13 @@ function Waitlist() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@email.com"
-                className="mono flex-1 border border-[var(--rule-strong)] bg-transparent px-5 py-4 text-sm text-paper placeholder:text-[var(--muted)] outline-none transition focus:border-paper"
+                className="flex-1 rounded-full border border-[var(--border-strong)] bg-[var(--surface)] px-5 py-3.5 text-[14px] text-white placeholder:text-[var(--text-muted)] outline-none transition focus:border-[var(--brand-lime)]"
               />
               <button
                 type="submit"
-                className="mono group inline-flex items-center justify-center gap-2 border border-[var(--accent)] bg-[var(--accent)] px-6 py-4 text-xs uppercase tracking-wider text-ink transition hover:bg-paper hover:border-paper"
+                className="btn-primary group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm"
               >
+                <Sparkles className="h-4 w-4" />
                 Unirme
                 <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
@@ -872,45 +956,69 @@ function Waitlist() {
 /* ═══════════════════ FOOTER ═══════════════════ */
 function Footer() {
   return (
-    <footer className="border-t border-[var(--rule-strong)] bg-ink">
-      <div className="mx-auto max-w-[1400px] px-6 py-10 md:px-10">
-        <div className="grid grid-cols-12 gap-8">
+    <footer className="relative border-t border-[var(--border)] bg-black">
+      <div className="mx-auto max-w-[1320px] px-6 py-16 md:px-10 md:py-20">
+        <div className="mb-16 flex items-center justify-center">
+          <Logo variant="full" size={72} glow />
+        </div>
+
+        <p className="editorial-italic mx-auto mb-16 max-w-2xl text-center text-2xl text-[var(--text-dim)] md:text-3xl">
+          Estudia <span className="brand-gradient-text">menos</span>. Aprende{" "}
+          <span className="brand-gradient-text">más</span>.
+        </p>
+
+        <div className="grid grid-cols-12 gap-8 border-t border-[var(--border)] pt-12">
           <div className="col-span-12 md:col-span-6">
-            <div className="flex items-center gap-2.5">
-              <LogoMark />
-              <span className="font-serif text-2xl tracking-tight">Estudify</span>
-            </div>
-            <p className="serif-ital mt-4 max-w-md text-xl text-[var(--muted)]">
-              Estudia menos. Aprende más.
+            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--text-muted)]">
+              El proyecto
+            </p>
+            <p className="mt-4 max-w-md text-[14px] leading-[1.6] text-[var(--text-dim)]">
+              Plataforma de estudio con IA construida para estudiantes
+              hispanohablantes. No hace tu tarea. Te forma.
             </p>
           </div>
           <div className="col-span-6 md:col-span-3">
-            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
+            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--text-muted)]">
               Navegación
             </p>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><a href="#features" className="hover:text-[var(--accent)] transition">Producto</a></li>
-              <li><a href="#readiness" className="hover:text-[var(--accent)] transition">Readiness</a></li>
-              <li><a href="#pricing" className="hover:text-[var(--accent)] transition">Precios</a></li>
-              <li><a href="#faq" className="hover:text-[var(--accent)] transition">FAQ</a></li>
+              {["Producto", "Readiness", "Precios", "FAQ"].map((l) => (
+                <li key={l}>
+                  <a
+                    href={`#${l.toLowerCase()}`}
+                    className="text-[var(--text-dim)] transition hover:text-[var(--brand-lime)]"
+                  >
+                    {l}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="col-span-6 md:col-span-3">
-            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
+            <p className="mono text-[10px] uppercase tracking-[0.25em] text-[var(--text-muted)]">
               Legal
             </p>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><a href="#" className="hover:text-[var(--accent)] transition">Privacidad</a></li>
-              <li><a href="#" className="hover:text-[var(--accent)] transition">Términos</a></li>
-              <li><a href="#" className="hover:text-[var(--accent)] transition">Contacto</a></li>
+              {["Privacidad", "Términos", "Contacto"].map((l) => (
+                <li key={l}>
+                  <a
+                    href="#"
+                    className="text-[var(--text-dim)] transition hover:text-[var(--brand-lime)]"
+                  >
+                    {l}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        <div className="mono mt-16 flex flex-col items-start justify-between gap-2 border-t border-[var(--rule)] pt-6 text-[10px] uppercase tracking-[0.2em] text-[var(--muted)] md:flex-row md:items-center">
-          <span>© 2026 Estudify.ai</span>
-          <span>Hecho en México / Para LATAM</span>
-          <span>v0.1 — Beta pública</span>
+        <div className="mono mt-16 flex flex-col items-start justify-between gap-2 border-t border-[var(--border)] pt-6 text-[10px] uppercase tracking-[0.22em] text-[var(--text-muted)] md:flex-row md:items-center">
+          <span>© 2026 estudify.ai</span>
+          <span>Hecho en México · Para LATAM</span>
+          <span className="text-[var(--brand-lime)]">
+            ● v0.1 — Beta pública
+          </span>
         </div>
       </div>
     </footer>
