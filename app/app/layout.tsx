@@ -10,9 +10,11 @@ import {
   GraduationCap,
   MessageCircle,
   BarChart3,
+  Settings,
   LogOut,
   ChevronLeft,
   Sparkles,
+  Users,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
@@ -22,6 +24,7 @@ const NAV_ITEMS = [
   { icon: BookOpen, label: "Flashcards", href: "/app/flashcards" },
   { icon: GraduationCap, label: "Exámenes", href: "/app/exams" },
   { icon: MessageCircle, label: "Tutor socrático", href: "/app/tutor" },
+  { icon: Users, label: "Grupos", href: "/app/groups" },
   { icon: BarChart3, label: "Mi progreso", href: "/app/progress" },
 ];
 
@@ -43,6 +46,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       }
       setUser(session.user);
       setLoading(false);
+
+      // Redirect a onboarding si es primera vez
+      const onboardingDone = localStorage.getItem("estudify_onboarding_done");
+      if (!onboardingDone && window.location.pathname === "/app") {
+        router.push("/app/onboarding");
+      }
     };
     getUser();
 
