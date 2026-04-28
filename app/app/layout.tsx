@@ -154,14 +154,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 }}
                 className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition ${
                   isActive
-                    ? "bg-[rgba(195,247,58,0.1)] text-[#C3F73A]"
+                    ? "bg-[rgba(94,200,232,0.08)] text-[#5EC8E8]"
                     : "text-[#8a8a93] hover:bg-[rgba(255,255,255,0.04)] hover:text-white"
                 }`}
                 title={collapsed ? item.label : undefined}
               >
                 <item.icon
                   className={`h-[18px] w-[18px] flex-shrink-0 ${
-                    isActive ? "text-[#C3F73A]" : "text-[#6a6a72] group-hover:text-white"
+                    isActive ? "text-[#5EC8E8]" : "text-[#6a6a72] group-hover:text-white"
                   }`}
                 />
                 {!collapsed && <span>{item.label}</span>}
@@ -174,7 +174,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {!collapsed && (
           <div className="mx-3 mb-3 rounded-xl border border-[rgba(255,255,255,0.07)] bg-[rgba(255,255,255,0.02)] p-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[#C3F73A]" />
+              <Sparkles className="h-4 w-4 text-[#8B7FD8]" />
               <span className="text-[12px] font-semibold text-white">Plan Free</span>
             </div>
             <p className="mt-1.5 text-[11px] text-[#6a6a72]">
@@ -182,7 +182,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </p>
             <a
               href="/pricing"
-              className="mt-3 block rounded-lg bg-[rgba(195,247,58,0.1)] py-2 text-center text-[11px] font-semibold text-[#C3F73A] transition hover:bg-[rgba(195,247,58,0.15)]"
+              className="mt-3 block rounded-lg py-2 text-center text-[11px] font-semibold transition"
+              style={{
+                background: "linear-gradient(135deg, rgba(195,247,58,0.1), rgba(94,200,232,0.1))",
+                color: "#7EE8C6",
+              }}
             >
               Mejorar a Pro
             </a>

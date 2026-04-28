@@ -57,13 +57,21 @@ function Nav() {
           </a>
         </div>
 
-        <a
-          href="#waitlist"
-          className="btn-primary group inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px]"
-        >
-          Únete a la beta
-          <ArrowUpRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </a>
+        <div className="flex items-center gap-3">
+          <a
+            href="/login"
+            className="text-[13px] font-medium text-[var(--text-dim)] transition hover:text-white"
+          >
+            Iniciar sesión
+          </a>
+          <a
+            href="/login"
+            className="btn-primary group inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px]"
+          >
+            Crear cuenta
+            <ArrowUpRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+        </div>
       </div>
     </nav>
   );
@@ -145,11 +153,11 @@ function Hero() {
         style={{ animationDelay: "0.4s" }}
       >
         <a
-          href="#waitlist"
+          href="/login"
           className="btn-primary group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-[14px]"
         >
           <Sparkles className="h-4 w-4" />
-          Únete a la beta
+          Empezar gratis
           <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </a>
         <a
@@ -897,16 +905,6 @@ function FAQ() {
 
 /* ═══════════════════ WAITLIST ═══════════════════ */
 function Waitlist() {
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Waitlist:", email);
-    setSent(true);
-    setEmail("");
-  };
-
   return (
     <section
       id="waitlist"
@@ -922,7 +920,7 @@ function Waitlist() {
 
       <div className="relative mx-auto max-w-[1320px] px-6 py-32 md:px-10 md:py-48">
         <div className="mx-auto max-w-4xl text-center">
-          <SectionTag number="08" label="Beta privada" />
+          <SectionTag number="08" label="Empieza ahora" />
 
           <h2 className="editorial mt-10 text-balance text-6xl md:text-[8rem]">
             Sé de los
@@ -937,33 +935,14 @@ function Waitlist() {
             <span className="text-white"> Acceso anticipado para los que se unan ahora.</span>
           </p>
 
-          {sent ? (
-            <div className="mono mt-12 inline-flex items-center gap-3 rounded-full border border-[var(--brand-lime)] bg-[var(--brand-lime-glow)] px-6 py-3 text-sm uppercase tracking-widest text-[var(--brand-lime)]">
-              <Check className="h-4 w-4" /> Te avisamos pronto
-            </div>
-          ) : (
-            <form
-              onSubmit={handleSubmit}
-              className="mx-auto mt-12 flex max-w-lg flex-col items-stretch gap-2 sm:flex-row"
-            >
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
-                className="flex-1 rounded-full border border-[var(--border-strong)] bg-[var(--surface)] px-5 py-3.5 text-[14px] text-white placeholder:text-[var(--text-muted)] outline-none transition focus:border-[var(--brand-lime)]"
-              />
-              <button
-                type="submit"
-                className="btn-primary group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm"
-              >
-                <Sparkles className="h-4 w-4" />
-                Unirme
-                <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </button>
-            </form>
-          )}
+          <a
+            href="/login"
+            className="btn-primary group mt-12 inline-flex items-center gap-2 rounded-full px-8 py-4 text-[15px]"
+          >
+            <Sparkles className="h-4 w-4" />
+            Crear cuenta gratis
+            <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
         </div>
       </div>
     </section>
