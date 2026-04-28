@@ -26,6 +26,7 @@ const NAV_ITEMS = [
   { icon: MessageCircle, label: "Tutor socrático", href: "/app/tutor" },
   { icon: Users, label: "Grupos", href: "/app/groups" },
   { icon: BarChart3, label: "Mi progreso", href: "/app/progress" },
+  { icon: Settings, label: "Mi cuenta", href: "/app/account" },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
