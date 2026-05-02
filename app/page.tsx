@@ -123,7 +123,7 @@ function Hero() {
         className="reveal mt-10 text-center"
         style={{ animationDelay: "0.1s" }}
       >
-       <span className="editorial block text-[clamp(4.5rem,14vw,12rem)] leading-[0.92] tracking-[-0.04em] brand-gradient-text">
+       <span className="editorial block text-[clamp(4.5rem,14vw,12rem)] leading-[1] tracking-[-0.04em] brand-gradient-text">
           estudify.ai
         </span>
       </h1>

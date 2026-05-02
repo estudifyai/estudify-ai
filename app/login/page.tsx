@@ -1,10 +1,83 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, Loader2 } from "lucide-react";
-import Starfield from "../components/Starfield";
+
+function LoginStarfield() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let raf = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const setup = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const stars = Array.from({ length: 120 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 1.2 + 0.3,
+      opacity: Math.random() * 0.35 + 0.1,
+      speed: Math.random() * 0.006 + 0.002,
+      phase: Math.random() * Math.PI * 2,
+    }));
+
+    const draw = (t: number) => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      ctx.clearRect(0, 0, w, h);
+
+      for (const s of stars) {
+        const twinkle = 0.6 + Math.sin(t * s.speed + s.phase) * 0.4;
+        ctx.globalAlpha = s.opacity * twinkle;
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+      raf = requestAnimationFrame(draw);
+    };
+
+    setup();
+    raf = requestAnimationFrame(draw);
+
+    let timer: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(timer);
+      timer = setTimeout(setup, 150);
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 z-0 pointer-events-none"
+      aria-hidden="true"
+    />
+  );
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -56,18 +129,18 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-black px-6">
-      {/* Starfield + nebula — mismo feel que la landing */}
+      {/* Nebula + starfield */}
       <div
-        className="pointer-events-none fixed inset-0"
+        className="pointer-events-none fixed inset-0 z-0"
         style={{
           background:
-            "radial-gradient(ellipse 50% 40% at 30% 20%, rgba(195,247,58,0.05) 0%, transparent 50%), radial-gradient(ellipse 40% 50% at 70% 30%, rgba(94,200,232,0.04) 0%, transparent 50%), radial-gradient(ellipse 50% 40% at 50% 80%, rgba(139,127,216,0.05) 0%, transparent 50%)",
+            "radial-gradient(ellipse 50% 40% at 30% 20%, rgba(195,247,58,0.06) 0%, transparent 50%), radial-gradient(ellipse 40% 50% at 70% 30%, rgba(94,200,232,0.05) 0%, transparent 50%), radial-gradient(ellipse 50% 40% at 50% 80%, rgba(139,127,216,0.06) 0%, transparent 50%)",
         }}
       />
-      <Starfield />
+      <LoginStarfield />
 
       <div className="relative z-10 w-full max-w-[440px]">
-        {/* Logo flotante con glow */}
+        {/* Logo */}
         <a href="/" className="mb-10 flex justify-center">
           <div className="relative">
             <div
@@ -87,9 +160,8 @@ export default function LoginPage() {
           </div>
         </a>
 
-        {/* Card con borde gradiente sutil */}
+        {/* Card */}
         <div className="relative rounded-2xl overflow-hidden">
-          {/* Gradient border */}
           <div
             className="absolute inset-0 rounded-2xl p-[1px]"
             style={{
@@ -101,7 +173,6 @@ export default function LoginPage() {
           </div>
 
           <div className="relative rounded-2xl p-8 md:p-10">
-            {/* Top shine */}
             <div
               className="pointer-events-none absolute inset-x-0 top-0 h-32"
               style={{
@@ -184,16 +255,6 @@ export default function LoginPage() {
                 style={{
                   background:
                     "linear-gradient(135deg, #C3F73A, #7EE8C6, #5EC8E8)",
-                  backgroundSize: "200% 100%",
-                }}
-                onMouseEnter={(e) => {
-                  (e.target as HTMLElement).style.backgroundPosition = "100% 0";
-                  (e.target as HTMLElement).style.boxShadow =
-                    "0 0 40px -8px rgba(126,232,198,0.5)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.target as HTMLElement).style.backgroundPosition = "0% 0";
-                  (e.target as HTMLElement).style.boxShadow = "none";
                 }}
               >
                 {loading ? (

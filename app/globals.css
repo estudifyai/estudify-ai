@@ -120,6 +120,8 @@ body {
   color: transparent;
   background-size: 150% 100%;
   animation: gradient-shift 8s ease-in-out infinite;
+  padding-bottom: 0.15em;
+  margin-bottom: -0.15em;
 }
 
 @keyframes gradient-shift {

@@ -174,6 +174,11 @@ export default function Starfield() {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
       clearTimeout(resizeTimer);
+      // Reset canvas para que se re-inicialice al montar de nuevo
+      if (canvas) {
+        canvas.width = 0;
+        canvas.height = 0;
+      }
     };
   }, []);
 
