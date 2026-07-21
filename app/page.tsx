@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ArrowUpRight, Check, Sparkles } from "lucide-react";
 import Starfield from "./components/Starfield";
 import Logo from "./components/Logo";
+import Logo3D from "./components/Logo3D";
 
 export default function Home() {
   return (
@@ -92,32 +93,8 @@ function Hero() {
         className="reveal mt-6 flex justify-center"
         style={{ animationDelay: "0.05s" }}
       >
-        <div className="float relative">
-          {/* Glow aura detrás del logo */}
-          <div
-            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[250px] w-[250px]"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(195,247,58,0.15) 0%, rgba(94,200,232,0.1) 40%, rgba(139,127,216,0.08) 65%, transparent 80%)",
-              filter: "blur(30px)",
-            }}
-          />
-          <Logo variant="full" size={160} glow />
-        </div>
+        <Logo3D />
       </div>
-      {/* Badge beta */}
-      <div className="reveal flex justify-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)]/80 px-4 py-1.5 text-[12px] text-[var(--text-dim)] backdrop-blur">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--brand-lime)] opacity-75 pulse-dot" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--brand-lime)]" />
-          </span>
-          <span className="mono uppercase tracking-[0.15em]">
-            Beta pública · Abril 2026
-          </span>
-        </div>
-      </div>
-
       {/* HERO principal: "estudify.ai" con gradiente del logo */}
       <h1
         className="reveal mt-10 text-center"
