@@ -41,7 +41,7 @@ export default function UploadPage() {
   }, []);
 
   const validateAndSetFile = (f: File) => {
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    const maxSize = 4 * 1024 * 1024; // 4MB — límite de Vercel Serverless
     const allowedTypes = [
       "application/pdf",
       "text/plain",
@@ -49,7 +49,7 @@ export default function UploadPage() {
     ];
 
     if (f.size > maxSize) {
-      setError("El archivo es muy grande. Máximo 10MB.");
+      setError("El archivo es muy grande. Máximo 4MB.");
       return;
     }
 
@@ -233,7 +233,7 @@ export default function UploadPage() {
                 Arrastra tu archivo aquí o haz click para buscar
               </p>
               <p className="mt-2 text-[13px] text-[#6a6a72]">
-                PDF, TXT o MD — Máximo 10MB
+                PDF, TXT o MD — Máximo 4MB
               </p>
             </>
           )}
