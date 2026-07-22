@@ -139,6 +139,14 @@ export default function SummaryPage() {
             })}
           </p>
         </div>
+        {project.id !== "temp" && (
+          <button
+            onClick={() => router.push(`/app/learn/${project.id}`)}
+            className="btn-primary ml-auto inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px]"
+          >
+            Empezar camino de estudio
+          </button>
+        )}
       </div>
 
       {/* Tabs */}
