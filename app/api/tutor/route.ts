@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-});
+import { generateText } from "@/app/lib/ai";
 
 const SYSTEM_PROMPT = `Eres el tutor socrático de Estudify.ai. Tu nombre es Orbi. Tu trabajo es ayudar a estudiantes hispanohablantes de prepa y universidad a ENTENDER conceptos, no a darles respuestas.
 
@@ -50,15 +46,11 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 512,
+    const text = await generateText({
       system: systemPrompt,
       messages: claudeMessages,
+      maxTokens: 512,
     });
-
-    const block = response.content[0];
-    const text = block.type === "text" ? block.text : "";
 
     return NextResponse.json({ reply: text });
   } catch (error: any) {

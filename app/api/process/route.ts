@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { extractText as extractPdfText } from "unpdf";
 import { createClient } from "@supabase/supabase-js";
+import { generateText, parseJsonArray } from "@/app/lib/ai";
 
 export const maxDuration = 60;
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-});
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -69,26 +65,11 @@ async function extractText(file: File): Promise<string> {
   return new TextDecoder().decode(buffer).slice(0, 15000);
 }
 
-async function generateWithClaude(
-  prompt: string,
-  text: string
-): Promise<string> {
-  const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
-    max_tokens: 4096,
-    messages: [
-      {
-        role: "user",
-        content: prompt + text,
-      },
-    ],
+async function generate(prompt: string, text: string): Promise<string> {
+  return generateText({
+    messages: [{ role: "user", content: prompt + text }],
+    maxTokens: 4096,
   });
-
-  const block = message.content[0];
-  if (block.type === "text") {
-    return block.text;
-  }
-  return "";
 }
 
 export async function POST(request: NextRequest) {
@@ -125,7 +106,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generar resumen con Claude
-    const summary = await generateWithClaude(SUMMARY_PROMPT, rawText);
+    const summary = await generate(SUMMARY_PROMPT, rawText);
 
     // Generar flashcards en paralelo
     let flashcards: any[] = [];
@@ -133,25 +114,12 @@ export async function POST(request: NextRequest) {
 
     try {
       const [flashcardsRaw, quizRaw] = await Promise.all([
-        generateWithClaude(FLASHCARDS_PROMPT, rawText),
-        generateWithClaude(QUIZ_PROMPT, rawText),
+        generate(FLASHCARDS_PROMPT, rawText),
+        generate(QUIZ_PROMPT, rawText),
       ]);
 
-      // Parsear JSON, limpiar posibles backticks
-      const cleanJson = (str: string) =>
-        str.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-
-      try {
-        flashcards = JSON.parse(cleanJson(flashcardsRaw));
-      } catch {
-        flashcards = [];
-      }
-
-      try {
-        quiz = JSON.parse(cleanJson(quizRaw));
-      } catch {
-        quiz = [];
-      }
+      flashcards = parseJsonArray(flashcardsRaw);
+      quiz = parseJsonArray(quizRaw);
     } catch {
       // Si flashcards/quiz fallan, el resumen sigue siendo válido
     }
