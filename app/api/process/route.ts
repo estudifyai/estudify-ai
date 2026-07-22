@@ -36,8 +36,8 @@ REGLAS:
 - Cada flashcard tiene "question" y "answer".
 - Varía los tipos: definición, aplicación, comparación, ejemplo, causa-efecto.
 - Solo usa información del material proporcionado. No inventes.
-- Responde SOLO con un JSON array válido, sin texto adicional, sin backticks.
-- Formato exacto: [{"question":"...","answer":"..."},{"question":"...","answer":"..."}]
+- Responde SOLO con un objeto JSON válido, sin texto adicional, sin backticks.
+- Formato exacto: {"flashcards":[{"question":"...","answer":"..."}]}
 
 MATERIAL:
 `;
@@ -50,8 +50,8 @@ REGLAS:
 - Incluye la respuesta correcta y una explicación breve.
 - Dificultad progresiva: 3 fáciles, 4 medias, 3 difíciles.
 - Solo usa información del material. No inventes datos.
-- Responde SOLO con un JSON array válido, sin texto adicional, sin backticks.
-- Formato: [{"question":"...","options":{"a":"...","b":"...","c":"...","d":"..."},"correct":"a","explanation":"..."}]
+- Responde SOLO con un objeto JSON válido, sin texto adicional, sin backticks.
+- Formato: {"quiz":[{"question":"...","options":{"a":"...","b":"...","c":"...","d":"..."},"correct":"a","explanation":"..."}]}
 
 MATERIAL:
 `;
@@ -68,10 +68,15 @@ async function extractText(file: File): Promise<string> {
   return new TextDecoder().decode(buffer).slice(0, 15000);
 }
 
-async function generate(prompt: string, text: string): Promise<string> {
+async function generate(
+  prompt: string,
+  text: string,
+  json = false
+): Promise<string> {
   return generateText({
     messages: [{ role: "user", content: prompt + text }],
-    maxTokens: 4096,
+    maxTokens: 8000,
+    json,
   });
 }
 
@@ -134,12 +139,17 @@ export async function POST(request: NextRequest) {
 
     try {
       const [flashcardsRaw, quizRaw] = await Promise.all([
-        generate(FLASHCARDS_PROMPT, rawText),
-        generate(QUIZ_PROMPT, rawText),
+        generate(FLASHCARDS_PROMPT, rawText, true),
+        generate(QUIZ_PROMPT, rawText, true),
       ]);
 
-      flashcards = parseJsonArray(flashcardsRaw);
-      quiz = parseJsonArray(quizRaw);
+      flashcards = parseJsonArray(flashcardsRaw, "flashcards");
+      quiz = parseJsonArray(quizRaw, "quiz");
+
+      if (flashcards.length === 0 || quiz.length === 0) {
+        console.error("JSON vacío. Flashcards raw:", flashcardsRaw.slice(0, 400));
+        console.error("Quiz raw:", quizRaw.slice(0, 400));
+      }
     } catch {
       // Si flashcards/quiz fallan, el resumen sigue siendo válido
     }
