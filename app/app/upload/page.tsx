@@ -90,8 +90,15 @@ export default function UploadPage() {
 
       setProgress("La IA está generando tu material...");
 
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) throw new Error("Sesión expirada. Vuelve a iniciar sesión.");
+
       const res = await fetch("/api/process", {
         method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}` },
         body: formData,
       });
       const data = await res.json();

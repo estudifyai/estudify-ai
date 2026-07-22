@@ -5,10 +5,13 @@ import { generateText, parseJsonArray } from "@/app/lib/ai";
 
 export const maxDuration = 60;
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+function supabaseAsUser(token: string) {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { global: { headers: { Authorization: `Bearer ${token}` } } }
+  );
+}
 
 // Prompt del Project Bible
 const SUMMARY_PROMPT = `Eres un asistente de estudio para estudiantes hispanohablantes de prepa y universidad. Tu tarea es crear un resumen claro y estructurado del siguiente material.
@@ -74,15 +77,32 @@ async function generate(prompt: string, text: string): Promise<string> {
 
 export async function POST(request: NextRequest) {
   try {
+    const token = (request.headers.get("authorization") || "").replace(
+      "Bearer ",
+      ""
+    );
+    if (!token) {
+      return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    }
+
+    const supabase = supabaseAsUser(token);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Sesión inválida. Vuelve a iniciar sesión." },
+        { status: 401 }
+      );
+    }
+
+    const userId = user.id;
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     const textInput = formData.get("text") as string | null;
     const title = (formData.get("title") as string) || "Sin título";
-    const userId = formData.get("userId") as string;
-
-    if (!userId) {
-      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
-    }
 
     // Extraer texto del input
     let rawText = "";
@@ -140,7 +160,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error("Supabase insert error:", error);
+      console.error("Supabase insert error:", error.message, error.details);
       // Aún así devolver el resumen aunque no se guarde
       return NextResponse.json({
         id: null,
