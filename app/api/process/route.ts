@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractText as extractPdfText } from "unpdf";
 import { createClient } from "@supabase/supabase-js";
-import { generateText, parseJsonArray } from "@/app/lib/ai";
+import { generateText, parseJsonObject } from "@/app/lib/ai";
 
 export const maxDuration = 60;
 
@@ -13,45 +13,21 @@ function supabaseAsUser(token: string) {
   );
 }
 
-// Prompt del Project Bible
-const SUMMARY_PROMPT = `Eres un asistente de estudio para estudiantes hispanohablantes de prepa y universidad. Tu tarea es crear un resumen claro y estructurado del siguiente material.
+const STUDY_PROMPT = `Eres un asistente de estudio para estudiantes hispanohablantes de prepa y universidad.
+
+A partir del MATERIAL, genera un objeto JSON con resumen, flashcards y examen.
 
 REGLAS:
-- Solo usa información del material proporcionado.
-- No inventes datos, fechas o conceptos que no estén en el texto.
-- Estructura con títulos (##) y subtítulos (###).
-- Máximo 800 palabras.
-- Al final, lista los 5 conceptos clave.
-- Si hay algo confuso o contradictorio en el material, marcarlo explícitamente.
-- Si el material no contiene suficiente información, dilo claramente.
-- Lenguaje: español neutro, accesible para estudiante de 15-22 años.
+- Solo usa información del material. No inventes datos, fechas ni conceptos.
+- Español neutro, accesible para estudiante de 15-22 años.
+- "summary": resumen en markdown, máximo 400 palabras, con títulos (##) y los conceptos clave al final.
+- "flashcards": exactamente 10 objetos con "question" y "answer". Varía tipos: definición, aplicación, comparación, ejemplo.
+- "quiz": exactamente 8 preguntas de opción múltiple con distractores plausibles. Dificultad progresiva.
+- Respuestas breves y directas. No uses emojis.
+- Responde SOLO con el objeto JSON, sin texto adicional ni backticks.
 
-MATERIAL:
-`;
-
-const FLASHCARDS_PROMPT = `Crea flashcards de estudio basadas en el siguiente material.
-
-REGLAS:
-- Genera entre 10 y 20 flashcards según la densidad del material.
-- Cada flashcard tiene "question" y "answer".
-- Varía los tipos: definición, aplicación, comparación, ejemplo, causa-efecto.
-- Solo usa información del material proporcionado. No inventes.
-- Responde SOLO con un objeto JSON válido, sin texto adicional, sin backticks.
-- Formato exacto: {"flashcards":[{"question":"...","answer":"..."}]}
-
-MATERIAL:
-`;
-
-const QUIZ_PROMPT = `Crea un examen de práctica basado en el siguiente material.
-
-REGLAS:
-- Genera 10 preguntas de opción múltiple.
-- Cada pregunta tiene 4 opciones (a, b, c, d) con distractores plausibles.
-- Incluye la respuesta correcta y una explicación breve.
-- Dificultad progresiva: 3 fáciles, 4 medias, 3 difíciles.
-- Solo usa información del material. No inventes datos.
-- Responde SOLO con un objeto JSON válido, sin texto adicional, sin backticks.
-- Formato: {"quiz":[{"question":"...","options":{"a":"...","b":"...","c":"...","d":"..."},"correct":"a","explanation":"..."}]}
+FORMATO JSON EXACTO:
+{"summary":"## Título\\n\\nTexto...","flashcards":[{"question":"...","answer":"..."}],"quiz":[{"question":"...","options":{"a":"...","b":"...","c":"...","d":"..."},"correct":"a","explanation":"..."}]}
 
 MATERIAL:
 `;
@@ -61,22 +37,18 @@ async function extractText(file: File): Promise<string> {
 
   if (file.type === "application/pdf") {
     const { text } = await extractPdfText(buffer);
-    return text.join("\n").slice(0, 15000);
+    return text.join("\n").slice(0, 6000);
   }
 
   // Texto plano
-  return new TextDecoder().decode(buffer).slice(0, 15000);
+  return new TextDecoder().decode(buffer).slice(0, 6000);
 }
 
-async function generate(
-  prompt: string,
-  text: string,
-  json = false
-): Promise<string> {
+async function generate(prompt: string, text: string): Promise<string> {
   return generateText({
     messages: [{ role: "user", content: prompt + text }],
-    maxTokens: 8000,
-    json,
+    maxTokens: 5000,
+    json: true,
   });
 }
 
@@ -115,7 +87,7 @@ export async function POST(request: NextRequest) {
     if (file && file.size > 0) {
       rawText = await extractText(file);
     } else if (textInput && textInput.trim().length > 0) {
-      rawText = textInput.slice(0, 15000);
+      rawText = textInput.slice(0, 6000);
     } else {
       return NextResponse.json(
         { error: "No se recibió material para procesar." },
@@ -130,29 +102,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generar resumen con Claude
-    const summary = await generate(SUMMARY_PROMPT, rawText);
+    const raw = await generate(STUDY_PROMPT, rawText);
+    const parsed = parseJsonObject(raw);
 
-    // Generar flashcards en paralelo
-    let flashcards: any[] = [];
-    let quiz: any[] = [];
-
-    try {
-      const [flashcardsRaw, quizRaw] = await Promise.all([
-        generate(FLASHCARDS_PROMPT, rawText, true),
-        generate(QUIZ_PROMPT, rawText, true),
-      ]);
-
-      flashcards = parseJsonArray(flashcardsRaw, "flashcards");
-      quiz = parseJsonArray(quizRaw, "quiz");
-
-      if (flashcards.length === 0 || quiz.length === 0) {
-        console.error("JSON vacío. Flashcards raw:", flashcardsRaw.slice(0, 400));
-        console.error("Quiz raw:", quizRaw.slice(0, 400));
-      }
-    } catch {
-      // Si flashcards/quiz fallan, el resumen sigue siendo válido
+    if (!parsed || typeof parsed.summary !== "string" || !parsed.summary.trim()) {
+      console.error("Respuesta no parseable:", raw.slice(0, 500));
+      return NextResponse.json(
+        { error: "La IA no devolvió un resultado válido. Intenta de nuevo." },
+        { status: 502 }
+      );
     }
+
+    const summary: string = parsed.summary;
+    const flashcards: any[] = Array.isArray(parsed.flashcards)
+      ? parsed.flashcards
+      : [];
+    const quiz: any[] = Array.isArray(parsed.quiz) ? parsed.quiz : [];
 
     // Guardar en Supabase
     const { data, error } = await supabase

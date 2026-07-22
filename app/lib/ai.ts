@@ -1,7 +1,9 @@
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
 const PROVIDER = (process.env.AI_PROVIDER || "groq").toLowerCase();
-const GROQ_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
+const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+// reasoning_effort solo lo aceptan modelos de razonamiento (gpt-oss, qwen).
+const GROQ_IS_REASONING = /gpt-oss|qwen/i.test(GROQ_MODEL);
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514";
 
 interface GenerateOpts {
@@ -39,13 +41,19 @@ async function generateGroq({ system, messages, maxTokens, json }: GenerateOpts)
       model: GROQ_MODEL,
       max_completion_tokens: maxTokens,
       temperature: json ? 0.3 : 0.7,
-      reasoning_effort: "low",
+      ...(GROQ_IS_REASONING ? { reasoning_effort: "low" } : {}),
       ...(json ? { response_format: { type: "json_object" } } : {}),
       messages: system
         ? [{ role: "system", content: system }, ...messages]
         : messages,
     }),
   });
+
+  if (res.status === 413 || res.status === 429) {
+    throw new Error(
+      "El material es muy largo para el plan gratuito. Usa un texto más corto o espera un minuto."
+    );
+  }
 
   if (!res.ok) {
     const detail = await res.text();
@@ -115,4 +123,20 @@ export function parseJsonArray(raw: string, key?: string): any[] {
     }
     return [];
   }
+}
+
+export function parseJsonObject(raw: string): any {
+  if (!raw) return null;
+  const cleaned = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch {}
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start !== -1 && end > start) {
+    try {
+      return JSON.parse(cleaned.slice(start, end + 1));
+    } catch {}
+  }
+  return null;
 }
