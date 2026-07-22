@@ -48,7 +48,7 @@ export default function Footer() {
                 Cómo funciona
               </a>
               <Link
-                href="/pricing"
+                href="/#pricing"
                 className="block text-[13px] text-[var(--text2)] hover:text-white transition-colors"
               >
                 Precios

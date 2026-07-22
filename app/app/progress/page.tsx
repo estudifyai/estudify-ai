@@ -97,17 +97,21 @@ export default function ProgressPage() {
 
   return (
     <div>
-      <div className="mb-10">
-        <h1 className="text-3xl font-semibold tracking-tight text-white">
-          Mi progreso
+      <div className="app-reveal app-reveal-1 mb-10">
+        <p className="mono text-[11px] uppercase tracking-[0.24em] text-[#6a6a72]">
+          § Readiness
+        </p>
+        <h1 className="editorial mt-3 text-[clamp(2rem,4vw,2.8rem)] leading-[1.05] tracking-[-0.02em] text-white">
+          Mi{" "}
+          <span className="editorial-italic brand-gradient-text">progreso</span>
         </h1>
-        <p className="mt-2 text-[15px] text-[#8a8a93]">
+        <p className="mt-3 text-[14px] text-[#8a8a93]">
           Tu Exam Readiness Score y estadísticas de estudio.
         </p>
       </div>
 
       {/* Exam Readiness Score — hero card */}
-      <div className="mb-8 rounded-2xl border border-[rgba(255,255,255,0.07)] bg-[#0a0a0c] p-8 md:p-10">
+      <div className="app-reveal app-reveal-2 surface-panel mb-8 p-8 md:p-10">
         <div className="flex flex-col items-center gap-8 md:flex-row">
           {/* Score circle */}
           <div className="relative h-44 w-44 flex-shrink-0">
@@ -181,7 +185,7 @@ export default function ProgressPage() {
       </div>
 
       {/* Stats grid */}
-      <div className="mb-8 grid gap-4 md:grid-cols-4">
+      <div className="app-reveal app-reveal-3 surface-panel mb-8 grid grid-cols-2 md:grid-cols-4">
         <StatCard
           icon={FileText}
           label="Materiales"
@@ -288,18 +292,16 @@ function StatCard({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-[rgba(255,255,255,0.07)] bg-[#0a0a0c] p-5">
+    <div className="px-6 py-6 md:border-l md:border-[rgba(255,255,255,0.06)] md:first:border-l-0">
       <div className="flex items-center gap-2">
         <Icon
-          className={`h-4 w-4 ${accent ? "text-[#C3F73A]" : "text-[#6a6a72]"}`}
+          className={`h-3.5 w-3.5 ${accent ? "text-[#C3F73A]" : "text-[#5a5a62]"}`}
         />
-        <span className="text-[12px] font-medium uppercase tracking-[0.1em] text-[#6a6a72]">
+        <span className="mono text-[10px] font-medium uppercase tracking-[0.16em] text-[#6a6a72]">
           {label}
         </span>
       </div>
-      <div className="mt-3 text-3xl font-semibold tracking-tight text-white">
-        {value}
-      </div>
+      <div className="editorial mt-3 text-4xl text-white">{value}</div>
       <div className="mt-1 text-[12px] text-[#6a6a72]">{sub}</div>
     </div>
   );

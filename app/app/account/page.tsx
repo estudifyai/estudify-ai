@@ -149,11 +149,15 @@ export default function AccountPage() {
 
   return (
     <div>
-      <div className="mb-10">
-        <h1 className="text-3xl font-semibold tracking-tight text-white">
-          Mi cuenta
+      <div className="app-reveal app-reveal-1 mb-10">
+        <p className="mono text-[11px] uppercase tracking-[0.24em] text-[#6a6a72]">
+          § Cuenta
+        </p>
+        <h1 className="editorial mt-3 text-[clamp(2rem,4vw,2.8rem)] leading-[1.05] tracking-[-0.02em] text-white">
+          Mi{" "}
+          <span className="editorial-italic brand-gradient-text">cuenta</span>
         </h1>
-        <p className="mt-2 text-[15px] text-[#8a8a93]">
+        <p className="mt-3 text-[14px] text-[#8a8a93]">
           Administra tu perfil y plan de suscripción.
         </p>
       </div>
@@ -179,7 +183,7 @@ export default function AccountPage() {
       )}
 
       {/* Profile card */}
-      <div className="mb-8 rounded-2xl border border-[rgba(255,255,255,0.07)] bg-[#0a0a0c] p-6">
+      <div className="app-reveal app-reveal-2 surface-panel mb-8 p-6">
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#C3F73A] via-[#5EC8E8] to-[#8B7FD8] text-lg font-bold text-black">
             {userName.charAt(0).toUpperCase()}
@@ -208,23 +212,23 @@ export default function AccountPage() {
       </div>
 
       {/* Plans */}
-      <h2 className="mb-4 text-[12px] font-semibold uppercase tracking-[0.15em] text-[#6a6a72]">
-        Planes disponibles
+      <h2 className="mono mb-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6a6a72]">
+        § Planes disponibles
       </h2>
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="app-reveal app-reveal-3 grid gap-4 md:grid-cols-3">
         {PLANS.map((p) => {
           const isCurrent = userPlan.plan === p.id;
           return (
             <div
               key={p.id}
-              className={`relative rounded-2xl p-6 ${
+              className={
                 p.featured
-                  ? "border-2 border-[#C3F73A]/30 bg-[rgba(195,247,58,0.03)]"
-                  : "border border-[rgba(255,255,255,0.07)] bg-[#0a0a0c]"
-              }`}
+                  ? "brand-ring relative p-[1px]"
+                  : "surface-panel relative p-6"
+              }
             >
               {p.featured && (
-                <div className="absolute -top-2.5 left-6">
+                <div className="absolute -top-2.5 left-6 z-10">
                   <div className="inline-flex items-center gap-1 rounded-full bg-[#C3F73A] px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-black">
                     <Sparkles className="h-2.5 w-2.5" />
                     Recomendado
@@ -232,59 +236,67 @@ export default function AccountPage() {
                 </div>
               )}
 
-              <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-[#6a6a72]">
-                {p.tag}
-              </p>
-              <h3 className="mt-2 text-2xl font-semibold text-white">
-                {p.name}
-              </h3>
-
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-[12px] text-[#6a6a72]">$</span>
-                <span className="text-4xl font-semibold text-white">
-                  {p.price}
-                </span>
-              </div>
-              <p className="mt-1 text-[11px] text-[#6a6a72]">{p.currency}</p>
-
-              <div className="mt-5 space-y-2 border-t border-[rgba(255,255,255,0.07)] pt-4">
-                {p.features.map((f, j) => (
-                  <div key={j} className="flex items-start gap-2">
-                    <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-[#C3F73A]" />
-                    <span className="text-[13px] text-white">{f}</span>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                onClick={() => !isCurrent && p.id !== "free" && handleCheckout(p.id)}
-                disabled={isCurrent || checkoutLoading !== null}
-                className={`group mt-6 inline-flex w-full items-center justify-center gap-1.5 rounded-full py-3 text-[13px] font-semibold transition ${
-                  isCurrent
-                    ? "cursor-default border border-[#C3F73A]/30 bg-[#C3F73A]/10 text-[#C3F73A]"
-                    : p.id === "free"
-                    ? "cursor-default border border-[rgba(255,255,255,0.07)] text-[#6a6a72]"
-                    : p.featured
-                    ? "bg-[#C3F73A] text-[#050507] hover:shadow-[0_0_20px_-4px_rgba(195,247,58,0.4)]"
-                    : "border border-[rgba(255,255,255,0.07)] text-white hover:border-[rgba(255,255,255,0.2)]"
-                }`}
+              <div
+                className={
+                  p.featured
+                    ? "surface-panel !border-0 h-full p-6"
+                    : "contents"
+                }
               >
-                {checkoutLoading === p.id ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : isCurrent ? (
-                  <>
-                    <Check className="h-4 w-4" />
-                    Plan actual
-                  </>
-                ) : p.id === "free" ? (
-                  "Plan básico"
-                ) : (
-                  <>
-                    Mejorar a {p.name}
-                    <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </>
-                )}
-              </button>
+                <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-[#6a6a72]">
+                  {p.tag}
+                </p>
+                <h3 className="mt-2 text-2xl font-semibold text-white">
+                  {p.name}
+                </h3>
+
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className="text-[12px] text-[#6a6a72]">$</span>
+                  <span className="editorial text-5xl text-white">
+                    {p.price}
+                  </span>
+                </div>
+                <p className="mt-1 text-[11px] text-[#6a6a72]">{p.currency}</p>
+
+                <div className="mt-5 space-y-2 border-t border-[rgba(255,255,255,0.07)] pt-4">
+                  {p.features.map((f, j) => (
+                    <div key={j} className="flex items-start gap-2">
+                      <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-[#C3F73A]" />
+                      <span className="text-[13px] text-white">{f}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => !isCurrent && p.id !== "free" && handleCheckout(p.id)}
+                  disabled={isCurrent || checkoutLoading !== null}
+                  className={`group mt-6 inline-flex w-full items-center justify-center gap-1.5 rounded-full py-3 text-[13px] font-semibold transition ${
+                    isCurrent
+                      ? "cursor-default border border-[#C3F73A]/30 bg-[#C3F73A]/10 text-[#C3F73A]"
+                      : p.id === "free"
+                      ? "cursor-default border border-[rgba(255,255,255,0.07)] text-[#6a6a72]"
+                      : p.featured
+                      ? "bg-[#C3F73A] text-[#050507] hover:shadow-[0_0_20px_-4px_rgba(195,247,58,0.4)]"
+                      : "border border-[rgba(255,255,255,0.07)] text-white hover:border-[rgba(255,255,255,0.2)]"
+                  }`}
+                >
+                  {checkoutLoading === p.id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : isCurrent ? (
+                    <>
+                      <Check className="h-4 w-4" />
+                      Plan actual
+                    </>
+                  ) : p.id === "free" ? (
+                    "Plan básico"
+                  ) : (
+                    <>
+                      Mejorar a {p.name}
+                      <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           );
         })}

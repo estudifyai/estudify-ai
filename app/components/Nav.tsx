@@ -49,7 +49,7 @@ export default function Nav() {
             Cómo funciona
           </a>
           <Link
-            href="/pricing"
+            href="/#pricing"
             className="text-[14px] text-[var(--text2)] hover:text-white transition-colors"
           >
             Precios

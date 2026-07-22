@@ -351,3 +351,76 @@ body {
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' /%3E%3C/svg%3E");
 }
+
+/* ═══════════ APP INTERIOR — design system ═══════════ */
+
+/* Atmósfera: nebula sutil para el área de contenido de la app */
+.app-ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 55% 40% at 75% 0%, rgba(94, 200, 232, 0.045) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 35% at 15% 15%, rgba(195, 247, 58, 0.035) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 45% at 85% 90%, rgba(139, 127, 216, 0.04) 0%, transparent 55%);
+}
+
+/* Reveal orquestado al cargar — una sola coreografía, no micro-efectos sueltos */
+@keyframes app-reveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.app-reveal {
+  opacity: 0;
+  animation: app-reveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.app-reveal-1 { animation-delay: 0.05s; }
+.app-reveal-2 { animation-delay: 0.12s; }
+.app-reveal-3 { animation-delay: 0.2s; }
+.app-reveal-4 { animation-delay: 0.28s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .app-reveal { animation: none; opacity: 1; transform: none; }
+}
+
+/* Superficie principal con highlight superior — reemplaza cards planas */
+.surface-panel {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.015) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.surface-panel::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 5%, rgba(255, 255, 255, 0.14) 50%, transparent 95%);
+}
+
+/* Anillo gradiente de marca para EL elemento hero de cada página */
+.brand-ring {
+  position: relative;
+  border-radius: 24px;
+}
+.brand-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(195, 247, 58, 0.35),
+    rgba(126, 232, 198, 0.12) 30%,
+    rgba(94, 200, 232, 0.25) 60%,
+    rgba(139, 127, 216, 0.3)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}

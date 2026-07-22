@@ -181,7 +181,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               3 resúmenes restantes este mes.
             </p>
             <a
-              href="/pricing"
+              href="/app/account"
               className="mt-3 block rounded-lg py-2 text-center text-[11px] font-semibold transition"
               style={{
                 background: "linear-gradient(135deg, rgba(195,247,58,0.1), rgba(94,200,232,0.1))",
@@ -221,8 +221,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* ═══ MAIN CONTENT ═══ */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-[1100px] px-6 py-8 md:px-10 md:py-10">
+      <main className="relative flex-1 overflow-y-auto">
+        <div className="app-ambient" />
+        <div className="relative z-10 mx-auto max-w-[1100px] px-6 py-8 md:px-10 md:py-10">
           {children}
         </div>
       </main>

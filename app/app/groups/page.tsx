@@ -122,12 +122,16 @@ export default function GroupsPage() {
 
   return (
     <div>
-      <div className="mb-10 flex items-start justify-between">
+      <div className="app-reveal app-reveal-1 mb-10 flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-white">
-            Grupos de clase
+          <p className="mono text-[11px] uppercase tracking-[0.24em] text-[#6a6a72]">
+            § Equipo
+          </p>
+          <h1 className="editorial mt-3 text-[clamp(2rem,4vw,2.8rem)] leading-[1.05] tracking-[-0.02em] text-white">
+            Grupos de{" "}
+            <span className="editorial-italic brand-gradient-text">clase</span>
           </h1>
-          <p className="mt-2 text-[15px] text-[#8a8a93]">
+          <p className="mt-3 text-[14px] text-[#8a8a93]">
             Estudia con tu equipo. Comparte material y compite en quizzes.
           </p>
         </div>
@@ -298,7 +302,7 @@ export default function GroupsPage() {
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-dashed border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.02)] p-12 text-center">
+        <div className="app-reveal app-reveal-2 surface-panel px-8 py-14 text-center">
           <Users className="mx-auto mb-4 h-10 w-10 text-[#6a6a72]" />
           <p className="text-[15px] font-medium text-white">
             No tienes grupos aún

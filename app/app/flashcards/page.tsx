@@ -46,17 +46,23 @@ export default function FlashcardsPage() {
 
   return (
     <div>
-      <div className="mb-10">
-        <h1 className="text-3xl font-semibold tracking-tight text-white">
-          Flashcards
+      <div className="app-reveal app-reveal-1 mb-10">
+        <p className="mono text-[11px] uppercase tracking-[0.24em] text-[#6a6a72]">
+          § Repaso
+        </p>
+        <h1 className="editorial mt-3 text-[clamp(2rem,4vw,2.8rem)] leading-[1.05] tracking-[-0.02em] text-white">
+          Tus{" "}
+          <span className="editorial-italic brand-gradient-text">
+            flashcards
+          </span>
         </h1>
-        <p className="mt-2 text-[15px] text-[#8a8a93]">
+        <p className="mt-3 text-[14px] text-[#8a8a93]">
           Practica con spaced repetition. Selecciona un material para empezar.
         </p>
       </div>
 
       {projects.length > 0 ? (
-        <div className="space-y-3">
+        <div className="app-reveal app-reveal-2 space-y-2">
           {projects.map((p) => (
             <button
               key={p.id}
@@ -85,7 +91,7 @@ export default function FlashcardsPage() {
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-dashed border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.02)] p-12 text-center">
+        <div className="app-reveal app-reveal-2 surface-panel px-8 py-14 text-center">
           <BookOpen className="mx-auto mb-4 h-10 w-10 text-[#6a6a72]" />
           <p className="text-[15px] font-medium text-white">
             No hay flashcards aún
