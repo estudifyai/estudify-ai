@@ -16,6 +16,7 @@ import {
   Sparkles,
   Users,
   Swords,
+  Crown,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
@@ -38,6 +39,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [activePath, setActivePath] = useState("/app");
   const [materialsUsed, setMaterialsUsed] = useState(0);
+  const [plan, setPlan] = useState<"free" | "pro" | "team">("free");
 
   useEffect(() => {
     const getUser = async () => {
@@ -60,6 +62,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         .eq("user_id", session.user.id)
         .gte("created_at", monthStart.toISOString());
       setMaterialsUsed(count || 0);
+
+      const { data: planData } = await supabase
+        .from("user_plans")
+        .select("plan, status")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+      if (planData?.status === "active" && planData.plan !== "free") {
+        setPlan(planData.plan as "pro" | "team");
+      }
 
       // Redirect a onboarding si es primera vez
       const onboardingDone = localStorage.getItem("estudify_onboarding_done");
@@ -191,27 +202,46 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* Plan badge */}
-        {!collapsed && (
-          <div className="mx-3 mb-3 rounded-xl border border-[rgba(255,255,255,0.07)] bg-[rgba(255,255,255,0.02)] p-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[#8B7FD8]" />
-              <span className="text-[12px] font-semibold text-white">Plan Free</span>
+        {!collapsed &&
+          (plan === "free" ? (
+            <div className="mx-3 mb-3 rounded-xl border border-[rgba(255,255,255,0.07)] bg-[rgba(255,255,255,0.02)] p-4">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-[#8B7FD8]" />
+                <span className="text-[12px] font-semibold text-white">Plan Free</span>
+              </div>
+              <p className="mt-1.5 text-[11px] text-[#6a6a72]">
+                {Math.max(0, 3 - materialsUsed)} de 3 materiales restantes este mes.
+              </p>
+              <a
+                href="/app/account"
+                className="mt-3 block rounded-lg py-2 text-center text-[11px] font-semibold transition"
+                style={{
+                  background: "linear-gradient(135deg, rgba(195,247,58,0.1), rgba(94,200,232,0.1))",
+                  color: "#7EE8C6",
+                }}
+              >
+                Mejorar a Pro
+              </a>
             </div>
-            <p className="mt-1.5 text-[11px] text-[#6a6a72]">
-              {Math.max(0, 3 - materialsUsed)} de 3 materiales restantes este mes.
-            </p>
-            <a
-              href="/app/account"
-              className="mt-3 block rounded-lg py-2 text-center text-[11px] font-semibold transition"
+          ) : (
+            <div
+              className="mx-3 mb-3 rounded-xl border border-[rgba(195,247,58,0.2)] p-4"
               style={{
-                background: "linear-gradient(135deg, rgba(195,247,58,0.1), rgba(94,200,232,0.1))",
-                color: "#7EE8C6",
+                background:
+                  "linear-gradient(135deg, rgba(195,247,58,0.06), rgba(94,200,232,0.06))",
               }}
             >
-              Mejorar a Pro
-            </a>
-          </div>
-        )}
+              <div className="flex items-center gap-2">
+                <Crown className="h-4 w-4 text-[#C3F73A]" />
+                <span className="text-[12px] font-semibold text-white">
+                  Plan {plan === "team" ? "Team" : "Pro"}
+                </span>
+              </div>
+              <p className="mt-1.5 text-[11px] text-[#6a6a72]">
+                Materiales ilimitados activos.
+              </p>
+            </div>
+          ))}
 
         {/* User */}
         <div className="border-t border-[rgba(255,255,255,0.07)] px-3 py-4">

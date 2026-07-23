@@ -454,3 +454,53 @@ body {
   from { transform: translateX(-100%); }
   to { transform: translateX(100%); }
 }
+
+/* ═══ Confetti ═══ */
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  border-radius: 2px;
+  animation-name: confetti-fall;
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation-fill-mode: forwards;
+}
+@keyframes confetti-fall {
+  to {
+    transform: translateY(110vh) translateX(var(--drift)) rotate(var(--spin));
+    opacity: 0.9;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confetti-piece { animation-duration: 0.01s; opacity: 0; }
+}
+
+/* ═══ Flip 3D de flashcards ═══ */
+.flip-scene { perspective: 1000px; }
+.flip-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 400ms cubic-bezier(0.77, 0, 0.175, 1);
+}
+.flip-card.flipped { transform: rotateY(180deg); }
+.flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-back { transform: rotateY(180deg); }
+@media (prefers-reduced-motion: reduce) {
+  .flip-card { transition: none; }
+}
+
+/* ═══ Entrada escalonada del zigzag ═══ */
+@keyframes node-enter {
+  /* --nx conserva el offset del zigzag; sin él, el fill-mode lo borraría */
+  from { opacity: 0; transform: translateX(var(--nx, 0px)) translateY(14px) scale(0.95); }
+  to { opacity: 1; transform: translateX(var(--nx, 0px)) translateY(0) scale(1); }
+}
+.node-enter {
+  opacity: 0;
+  animation: node-enter 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .node-enter { animation: none; opacity: 1; }
+}

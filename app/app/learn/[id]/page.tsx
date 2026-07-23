@@ -282,8 +282,12 @@ export default function LearnPathPage() {
                   return (
                     <div
                       key={node.id}
-                      className="flex w-full flex-col items-center"
-                      style={{ transform: `translateX(${offset * 70}px)` }}
+                      className="node-enter flex w-full flex-col items-center"
+                      style={{
+                        ["--nx" as any]: `${offset * 70}px`,
+                        transform: `translateX(${offset * 70}px)`,
+                        animationDelay: `${globalIndex * 60}ms`,
+                      }}
                     >
                       <button
                         onClick={() => unlocked && setActiveNode(node)}
@@ -454,26 +458,31 @@ function FlashcardsActivity({
       </div>
 
       <div
+        className="flip-scene"
         onClick={() => {
           sfx.flip();
           setShowAnswer(!showAnswer);
         }}
-        className="surface-panel flex min-h-[260px] cursor-pointer flex-col items-center justify-center p-10 text-center"
       >
-        <span className="mono mb-4 text-[10px] uppercase tracking-[0.2em] text-[#6a6a72]">
-          {showAnswer ? "Respuesta" : "Pregunta"}
-        </span>
-        <p
-          key={`${index}-${showAnswer}`}
-          className="card-face text-xl font-medium leading-relaxed text-white"
-        >
-          {showAnswer ? cards[index].answer : cards[index].question}
-        </p>
-        {!showAnswer && (
-          <p className="mt-5 text-[12px] text-[#6a6a72]">
-            Click para revelar
-          </p>
-        )}
+        <div className={`flip-card ${showAnswer ? "flipped" : ""}`}>
+          <div className="flip-face surface-panel flex min-h-[260px] cursor-pointer flex-col items-center justify-center p-10 text-center">
+            <span className="mono mb-4 text-[10px] uppercase tracking-[0.2em] text-[#6a6a72]">
+              Pregunta
+            </span>
+            <p className="text-xl font-medium leading-relaxed text-white">
+              {cards[index].question}
+            </p>
+            <p className="mt-5 text-[12px] text-[#6a6a72]">Click para revelar</p>
+          </div>
+          <div className="flip-back flip-face surface-panel absolute inset-0 flex cursor-pointer flex-col items-center justify-center p-10 text-center">
+            <span className="mono mb-4 text-[10px] uppercase tracking-[0.2em] text-[#5EC8E8]">
+              Respuesta
+            </span>
+            <p className="text-xl font-medium leading-relaxed text-white">
+              {cards[index].answer}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="mt-6 flex justify-center gap-3">

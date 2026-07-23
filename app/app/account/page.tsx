@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
+import { sfx } from "../../lib/feedback";
+import Confetti from "../../components/Confetti";
 import { useSearchParams } from "next/navigation";
 import {
   User,
@@ -76,10 +78,35 @@ export default function AccountPage() {
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [paymentMessage, setPaymentMessage] = useState("");
 
+  const [celebrate, setCelebrate] = useState(false);
+
   useEffect(() => {
     const payment = searchParams.get("payment");
-    if (payment === "success") {
-      setPaymentMessage("Pago exitoso. Tu plan se activó.");
+    const sessionId = searchParams.get("session_id");
+
+    if (payment === "success" && sessionId) {
+      (async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+        const res = await fetch("/api/stripe/verify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ sessionId }),
+        });
+        const data = await res.json();
+        if (res.ok && data.plan) {
+          setUserPlan({ plan: data.plan, status: "active" });
+          setPaymentMessage("Pago exitoso. Tu plan se activó.");
+          setCelebrate(true);
+          sfx.complete();
+          setTimeout(() => setCelebrate(false), 4000);
+        } else {
+          setPaymentMessage("Pago recibido pero no pudimos verificarlo. Recarga la página.");
+        }
+      })();
     } else if (payment === "cancelled") {
       setPaymentMessage("Pago cancelado. No se realizó ningún cargo.");
     }
@@ -149,6 +176,8 @@ export default function AccountPage() {
 
   return (
     <div>
+      {celebrate && <Confetti />}
+
       <div className="app-reveal app-reveal-1 mb-10">
         <p className="mono text-[11px] uppercase tracking-[0.24em] text-[#6a6a72]">
           § Cuenta

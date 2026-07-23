@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         userId,
         plan,
       },
-      success_url: `${baseUrl}/app/account?payment=success`,
+      success_url: `${baseUrl}/app/account?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/app/account?payment=cancelled`,
     });
 
