@@ -522,6 +522,9 @@ function QuizActivity({
   const [selected, setSelected] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [topicStats, setTopicStats] = useState<
+    Record<string, { correct: number; total: number }>
+  >({});
 
   const q = questions[current];
 
@@ -534,6 +537,15 @@ function QuizActivity({
     } else {
       sfx.wrong();
     }
+
+    const topic = (q as any).topic || "General";
+    setTopicStats((prev) => ({
+      ...prev,
+      [topic]: {
+        correct: (prev[topic]?.correct || 0) + (opt === q.correct ? 1 : 0),
+        total: (prev[topic]?.total || 0) + 1,
+      },
+    }));
   };
 
   const next = async () => {
@@ -560,6 +572,7 @@ function QuizActivity({
             subject: project.title,
             quizScore: finalScore,
             quizTotal: questions.length,
+            topicBreakdown: topicStats,
             flashcardsReviewed: project.flashcards?.length || 0,
             totalFlashcards: project.flashcards?.length || 0,
           }),

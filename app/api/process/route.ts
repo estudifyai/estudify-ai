@@ -22,12 +22,12 @@ REGLAS:
 - Español neutro, accesible para estudiante de 15-22 años.
 - "summary": resumen en markdown, máximo 400 palabras, con títulos (##) y los conceptos clave al final.
 - "flashcards": exactamente 10 objetos con "question" y "answer". Varía tipos: definición, aplicación, comparación, ejemplo.
-- "quiz": exactamente 8 preguntas de opción múltiple con distractores plausibles. Dificultad progresiva.
+- "quiz": exactamente 8 preguntas de opción múltiple con distractores plausibles. Dificultad progresiva. Cada pregunta incluye "topic": el subtema del material al que pertenece (2-4 palabras, usa 3-4 subtemas en total, repetidos entre preguntas).
 - Respuestas breves y directas. No uses emojis.
 - Responde SOLO con el objeto JSON, sin texto adicional ni backticks.
 
 FORMATO JSON EXACTO:
-{"summary":"## Título\\n\\nTexto...","flashcards":[{"question":"...","answer":"..."}],"quiz":[{"question":"...","options":{"a":"...","b":"...","c":"...","d":"..."},"correct":"a","explanation":"..."}]}
+{"summary":"## Título\\n\\nTexto...","flashcards":[{"question":"...","answer":"..."}],"quiz":[{"question":"...","topic":"...","options":{"a":"...","b":"...","c":"...","d":"..."},"correct":"a","explanation":"..."}]}
 
 MATERIAL:
 `;
@@ -80,6 +80,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File | null;
     const textInput = formData.get("text") as string | null;
     const title = (formData.get("title") as string) || "Sin título";
+    const examDate = (formData.get("examDate") as string) || null;
 
     // Extraer texto del input
     let rawText = "";
@@ -125,6 +126,7 @@ export async function POST(request: NextRequest) {
       .insert({
         user_id: userId,
         title,
+        exam_date: examDate,
         raw_text: rawText.slice(0, 5000), // Guardar preview del texto
         summary,
         flashcards,

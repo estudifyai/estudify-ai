@@ -11,6 +11,7 @@ import {
   FileText,
   Sparkles,
   Target,
+  CalendarClock,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
@@ -18,10 +19,50 @@ import type { User } from "@supabase/supabase-js";
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [nextExam, setNextExam] = useState<{
+    title: string;
+    date: string;
+    days: number;
+    readiness: number | null;
+  } | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setUser(session?.user ?? null);
+
+      if (session?.user) {
+        const today = new Date().toISOString().split("T")[0];
+        const [examRes, scoreRes] = await Promise.all([
+          supabase
+            .from("projects")
+            .select("id, title, exam_date")
+            .eq("user_id", session.user.id)
+            .gte("exam_date", today)
+            .order("exam_date", { ascending: true })
+            .limit(1),
+          supabase
+            .from("readiness_scores")
+            .select("score, project_id")
+            .eq("user_id", session.user.id)
+            .order("created_at", { ascending: false })
+            .limit(10),
+        ]);
+
+        const exam = examRes.data?.[0];
+        if (exam?.exam_date) {
+          const days = Math.ceil(
+            (new Date(exam.exam_date + "T00:00:00").getTime() - Date.now()) /
+              86400000
+          );
+          const match = scoreRes.data?.find((s) => s.project_id === exam.id);
+          setNextExam({
+            title: exam.title,
+            date: exam.exam_date,
+            days: Math.max(0, days),
+            readiness: match?.score ?? null,
+          });
+        }
+      }
     });
   }, []);
 
@@ -54,6 +95,44 @@ export default function Dashboard() {
           Tu laboratorio de estudio te espera.
         </p>
       </div>
+
+      {nextExam && (
+        <div className="app-reveal app-reveal-1 brand-ring mb-8">
+          <div className="surface-panel !border-0 flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[rgba(195,247,58,0.25)] bg-[rgba(195,247,58,0.08)]">
+                <CalendarClock className="h-5 w-5 text-[#C3F73A]" />
+              </div>
+              <div>
+                <p className="mono text-[10px] uppercase tracking-[0.18em] text-[#6a6a72]">
+                  Próximo examen — {nextExam.title}
+                </p>
+                <p className="editorial mt-1 text-2xl text-white">
+                  {nextExam.days === 0
+                    ? "Es hoy."
+                    : nextExam.days === 1
+                    ? "Falta 1 día."
+                    : `Faltan ${nextExam.days} días.`}{" "}
+                  <span className="text-[#8a8a93]">
+                    {nextExam.readiness !== null
+                      ? `Estás al ${nextExam.readiness}%.`
+                      : "Aún sin Readiness."}
+                  </span>
+                </p>
+              </div>
+            </div>
+            <span className="text-[13px] text-[#8a8a93]">
+              {nextExam.readiness === null
+                ? "Toma un quiz para medir tu preparación."
+                : nextExam.readiness >= 85
+                ? "Vas muy bien. Mantén el ritmo."
+                : nextExam.days <= 3
+                ? "Recta final: una sesión diaria."
+                : "Una sesión hoy te acerca al 85%."}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* ═══ Hero: upload con anillo de marca ═══ */}
       <div className="app-reveal app-reveal-2 brand-ring mb-12">

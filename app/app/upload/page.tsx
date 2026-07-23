@@ -19,6 +19,7 @@ export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [textInput, setTextInput] = useState("");
   const [title, setTitle] = useState("");
+  const [examDate, setExamDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [progress, setProgress] = useState("");
@@ -82,6 +83,7 @@ export default function UploadPage() {
       const formData = new FormData();
       formData.append("userId", userId);
       formData.append("title", title || "Sin título");
+      if (examDate) formData.append("examDate", examDate);
       if (mode === "file" && file) {
         formData.append("file", file);
       } else {
@@ -146,6 +148,23 @@ export default function UploadPage() {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Ej: Biología — Mitosis"
           className="w-full rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] px-4 py-3 text-[14px] text-white placeholder:text-[#4a4a52] outline-none transition focus:border-[rgba(94,200,232,0.5)] focus:shadow-[0_0_0_3px_rgba(94,200,232,0.08)]"
+        />
+      </div>
+
+      {/* Fecha del examen */}
+      <div className="app-reveal app-reveal-2 mb-6">
+        <label className="mono mb-2 block text-[10px] font-medium uppercase tracking-[0.18em] text-[#6a6a72]">
+          Fecha del examen{" "}
+          <span className="normal-case tracking-normal text-[#4a4a52]">
+            (opcional)
+          </span>
+        </label>
+        <input
+          type="date"
+          value={examDate}
+          onChange={(e) => setExamDate(e.target.value)}
+          min={new Date().toISOString().split("T")[0]}
+          className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] px-4 py-3 text-[14px] text-white outline-none transition focus:border-[rgba(94,200,232,0.5)] [color-scheme:dark]"
         />
       </div>
 

@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
     const supabase = supabaseAsUser(token);
 
-    const { userId, projectId, subject, quizScore, quizTotal, flashcardsReviewed, totalFlashcards } =
+    const { userId, projectId, subject, quizScore, quizTotal, flashcardsReviewed, totalFlashcards, topicBreakdown } =
       await request.json();
 
     if (!userId || !projectId) {
@@ -59,6 +59,7 @@ export async function POST(request: NextRequest) {
         flashcards_reviewed: flashcardsReviewed || 0,
         total_flashcards: totalFlashcards || 0,
         score: finalScore,
+        topic_breakdown: topicBreakdown || {},
       })
       .select("id, score")
       .single();

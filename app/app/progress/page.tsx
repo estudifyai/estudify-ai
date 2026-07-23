@@ -11,6 +11,7 @@ interface ReadinessScore {
   quiz_score: number;
   flashcards_reviewed: number;
   total_flashcards: number;
+  topic_breakdown: Record<string, { correct: number; total: number }> | null;
   created_at: string;
 }
 
@@ -183,6 +184,53 @@ export default function ProgressPage() {
           </div>
         </div>
       </div>
+
+      {scores[0]?.topic_breakdown &&
+        Object.keys(scores[0].topic_breakdown).length > 0 && (
+          <div className="app-reveal app-reveal-2 surface-panel mb-8 p-7">
+            <h2 className="mono mb-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6a6a72]">
+              § Dominio por tema
+            </h2>
+            <div className="space-y-4">
+              {Object.entries(scores[0].topic_breakdown)
+                .map(([topic, s]) => ({
+                  topic,
+                  pct: s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0,
+                }))
+                .sort((a, b) => a.pct - b.pct)
+                .map(({ topic, pct }) => (
+                  <div key={topic}>
+                    <div className="mb-1.5 flex items-baseline justify-between">
+                      <span className="text-[13px] text-white">{topic}</span>
+                      <span
+                        className="mono text-[12px] font-semibold"
+                        style={{
+                          color:
+                            pct >= 80 ? "#C3F73A" : pct >= 55 ? "#5EC8E8" : "#ef4444",
+                        }}
+                      >
+                        {pct}%
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-[rgba(255,255,255,0.05)]">
+                      <div
+                        className="h-full rounded-full transition-all duration-700"
+                        style={{
+                          width: `${pct}%`,
+                          background:
+                            pct >= 80 ? "#C3F73A" : pct >= 55 ? "#5EC8E8" : "#ef4444",
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+            </div>
+            <p className="mt-5 text-[12px] text-[#6a6a72]">
+              Los temas en rojo son tu prioridad. Repásalos en el camino de
+              estudio.
+            </p>
+          </div>
+        )}
 
       {/* Stats grid */}
       <div className="app-reveal app-reveal-3 surface-panel mb-8 grid grid-cols-2 md:grid-cols-4">
