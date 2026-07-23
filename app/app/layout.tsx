@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   Sparkles,
   Users,
+  Swords,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { icon: BookOpen, label: "Flashcards", href: "/app/flashcards" },
   { icon: GraduationCap, label: "Exámenes", href: "/app/exams" },
   { icon: MessageCircle, label: "Tutor socrático", href: "/app/tutor" },
+  { icon: Swords, label: "Duelo", href: "/app/duel" },
   { icon: Users, label: "Grupos", href: "/app/groups" },
   { icon: BarChart3, label: "Mi progreso", href: "/app/progress" },
   { icon: Settings, label: "Mi cuenta", href: "/app/account" },
