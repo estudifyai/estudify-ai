@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { sfx } from "../../lib/feedback";
 import Confetti from "../../components/Confetti";
@@ -79,12 +79,14 @@ export default function AccountPage() {
   const [paymentMessage, setPaymentMessage] = useState("");
 
   const [celebrate, setCelebrate] = useState(false);
+  const verifiedRef = useRef(false);
 
   useEffect(() => {
     const payment = searchParams.get("payment");
     const sessionId = searchParams.get("session_id");
 
-    if (payment === "success" && sessionId) {
+    if (payment === "success" && sessionId && !verifiedRef.current) {
+      verifiedRef.current = true;
       (async () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) return;
@@ -102,6 +104,7 @@ export default function AccountPage() {
           setPaymentMessage("Pago exitoso. Tu plan se activó.");
           setCelebrate(true);
           sfx.purchase();
+          window.history.replaceState({}, "", "/app/account");
           setTimeout(() => setCelebrate(false), 4000);
         } else {
           setPaymentMessage("Pago recibido pero no pudimos verificarlo. Recarga la página.");

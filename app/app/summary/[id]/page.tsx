@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
+import { sfx } from "../../../lib/feedback";
 import {
   ArrowLeft,
   ArrowRight,
@@ -95,6 +96,9 @@ export default function SummaryPage() {
     setShowExplanation(true);
     if (project && option === project.quiz[currentQuestion]?.correct) {
       setScore(score + 1);
+      sfx.correct();
+    } else {
+      sfx.wrong();
     }
   };
 
@@ -105,6 +109,7 @@ export default function SummaryPage() {
       setShowExplanation(false);
     } else {
       setQuizComplete(true);
+      sfx.complete();
     }
   };
 
@@ -257,24 +262,34 @@ export default function SummaryPage() {
             {currentCard + 1} de {project.flashcards.length}
           </div>
 
-          <div
-            onClick={() => setShowAnswer(!showAnswer)}
-            className="cursor-pointer rounded-2xl border border-[rgba(255,255,255,0.07)] bg-[#0a0a0c] p-10 text-center transition hover:border-[rgba(255,255,255,0.14)]"
-            style={{ minHeight: "240px" }}
-          >
-            <span className="mb-4 block text-[11px] font-semibold uppercase tracking-[0.15em] text-[#6a6a72]">
-              {showAnswer ? "Respuesta" : "Pregunta"}
-            </span>
-            <p className="text-xl font-medium leading-relaxed text-white">
-              {showAnswer
-                ? project.flashcards[currentCard]?.answer
-                : project.flashcards[currentCard]?.question}
-            </p>
-            {!showAnswer && (
-              <p className="mt-6 text-[12px] text-[#6a6a72]">
-                Click para ver respuesta
-              </p>
-            )}
+          <div className="flip-scene">
+            <div
+              className={`flip-card ${showAnswer ? "flipped" : ""}`}
+              onClick={() => {
+                sfx.flip();
+                setShowAnswer(!showAnswer);
+              }}
+            >
+              <div className="flip-face">
+                <span className="mono mb-4 text-[10px] uppercase tracking-[0.2em] text-[#6a6a72]">
+                  Pregunta
+                </span>
+                <p className="text-xl font-medium leading-relaxed text-white">
+                  {project.flashcards[currentCard]?.question}
+                </p>
+                <p className="mt-5 text-[12px] text-[#6a6a72]">
+                  Click para revelar
+                </p>
+              </div>
+              <div className="flip-face flip-back">
+                <span className="mono mb-4 text-[10px] uppercase tracking-[0.2em] text-[#5EC8E8]">
+                  Respuesta
+                </span>
+                <p className="text-xl font-medium leading-relaxed text-white">
+                  {project.flashcards[currentCard]?.answer}
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="mt-6 flex justify-center gap-3">
