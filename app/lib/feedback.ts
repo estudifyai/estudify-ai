@@ -53,4 +53,11 @@ export const sfx = {
       tone(f, i * 0.09, 0.3, 0.055)
     );
   },
+  purchase: () => {
+    if (isMuted()) return;
+    // Acorde ascendente + sostenido final
+    [523.25, 659.25, 783.99].forEach((f, i) => tone(f, i * 0.08, 0.5, 0.05));
+    tone(1046.5, 0.28, 0.9, 0.06);
+    tone(1318.5, 0.42, 0.8, 0.045);
+  },
 };

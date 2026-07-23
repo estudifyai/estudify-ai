@@ -229,17 +229,7 @@ export default function SummaryPage() {
           </div>
 
           {/* Actions */}
-          {project.id !== "temp" && (
-            <button
-              onClick={() => router.push(`/app/learn/${project.id}`)}
-              className="btn-primary mt-6 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-[14px]"
-            >
-              <Sparkles className="h-4 w-4" />
-              Empezar camino de estudio
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          )}
-          <div className="mt-3 flex gap-3">
+          <div className="mt-6 flex gap-3">
             <button
               onClick={() => setActiveTab("flashcards")}
               disabled={project.flashcards.length === 0}

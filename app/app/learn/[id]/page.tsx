@@ -457,15 +457,15 @@ function FlashcardsActivity({
         </span>
       </div>
 
-      <div
-        className="flip-scene"
-        onClick={() => {
-          sfx.flip();
-          setShowAnswer(!showAnswer);
-        }}
-      >
-        <div className={`flip-card ${showAnswer ? "flipped" : ""}`}>
-          <div className="flip-face surface-panel flex min-h-[260px] cursor-pointer flex-col items-center justify-center p-10 text-center">
+      <div className="flip-scene">
+        <div
+          className={`flip-card ${showAnswer ? "flipped" : ""}`}
+          onClick={() => {
+            sfx.flip();
+            setShowAnswer(!showAnswer);
+          }}
+        >
+          <div className="flip-face">
             <span className="mono mb-4 text-[10px] uppercase tracking-[0.2em] text-[#6a6a72]">
               Pregunta
             </span>
@@ -474,7 +474,8 @@ function FlashcardsActivity({
             </p>
             <p className="mt-5 text-[12px] text-[#6a6a72]">Click para revelar</p>
           </div>
-          <div className="flip-back flip-face surface-panel absolute inset-0 flex cursor-pointer flex-col items-center justify-center p-10 text-center">
+
+          <div className="flip-face flip-back">
             <span className="mono mb-4 text-[10px] uppercase tracking-[0.2em] text-[#5EC8E8]">
               Respuesta
             </span>

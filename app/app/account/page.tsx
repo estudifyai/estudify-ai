@@ -101,7 +101,7 @@ export default function AccountPage() {
           setUserPlan({ plan: data.plan, status: "active" });
           setPaymentMessage("Pago exitoso. Tu plan se activó.");
           setCelebrate(true);
-          sfx.complete();
+          sfx.purchase();
           setTimeout(() => setCelebrate(false), 4000);
         } else {
           setPaymentMessage("Pago recibido pero no pudimos verificarlo. Recarga la página.");
