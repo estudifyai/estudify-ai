@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
+import { sfx, isMuted, toggleMute } from "../../../lib/feedback";
 import {
   BookOpen,
   Layers,
@@ -13,6 +14,8 @@ import {
   ArrowRight,
   Loader2,
   Target,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 
 /* ─── Tipos ─── */
@@ -49,6 +52,11 @@ export default function LearnPathPage() {
   const [completed, setCompleted] = useState<string[]>([]);
   const [activeNode, setActiveNode] = useState<PathNode | null>(null);
   const [loading, setLoading] = useState(true);
+  const [muted, setMuted] = useState(false);
+
+  useEffect(() => {
+    setMuted(isMuted());
+  }, []);
 
   /* ─── Cargar proyecto + progreso ─── */
   useEffect(() => {
@@ -150,6 +158,7 @@ export default function LearnPathPage() {
     }
     const next = [...completed, nodeId];
     setCompleted(next);
+    sfx.complete();
     setActiveNode(null);
 
     await supabase.from("learn_progress").upsert(
@@ -207,26 +216,40 @@ export default function LearnPathPage() {
           </h1>
         </div>
 
-        {/* Progreso */}
-        <div className="surface-panel hidden min-w-[200px] p-5 md:block">
-          <div className="flex items-center gap-2">
-            <Target className="h-3.5 w-3.5 text-[#C3F73A]" />
-            <span className="mono text-[10px] uppercase tracking-[0.16em] text-[#6a6a72]">
-              Progreso
-            </span>
+        <div className="flex items-center gap-3">
+          {/* Progreso */}
+          <div className="surface-panel hidden min-w-[200px] p-5 md:block">
+            <div className="flex items-center gap-2">
+              <Target className="h-3.5 w-3.5 text-[#C3F73A]" />
+              <span className="mono text-[10px] uppercase tracking-[0.16em] text-[#6a6a72]">
+                Progreso
+              </span>
+            </div>
+            <div className="editorial mt-2 text-3xl text-white">
+              {progressPct}%
+            </div>
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[rgba(255,255,255,0.06)]">
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${progressPct}%`,
+                  background: "linear-gradient(90deg, #C3F73A, #5EC8E8, #8B7FD8)",
+                }}
+              />
+            </div>
           </div>
-          <div className="editorial mt-2 text-3xl text-white">
-            {progressPct}%
-          </div>
-          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[rgba(255,255,255,0.06)]">
-            <div
-              className="h-full rounded-full transition-all duration-700"
-              style={{
-                width: `${progressPct}%`,
-                background: "linear-gradient(90deg, #C3F73A, #5EC8E8, #8B7FD8)",
-              }}
-            />
-          </div>
+
+          <button
+            onClick={() => {
+              const m = toggleMute();
+              setMuted(m);
+              if (!m) sfx.flip();
+            }}
+            className="rounded-full border border-[rgba(255,255,255,0.08)] p-2.5 text-[#6a6a72] transition hover:text-white"
+            title={muted ? "Activar sonido" : "Silenciar"}
+          >
+            {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </button>
         </div>
       </div>
 
@@ -431,13 +454,19 @@ function FlashcardsActivity({
       </div>
 
       <div
-        onClick={() => setShowAnswer(!showAnswer)}
+        onClick={() => {
+          sfx.flip();
+          setShowAnswer(!showAnswer);
+        }}
         className="surface-panel flex min-h-[260px] cursor-pointer flex-col items-center justify-center p-10 text-center"
       >
         <span className="mono mb-4 text-[10px] uppercase tracking-[0.2em] text-[#6a6a72]">
           {showAnswer ? "Respuesta" : "Pregunta"}
         </span>
-        <p className="text-xl font-medium leading-relaxed text-white">
+        <p
+          key={`${index}-${showAnswer}`}
+          className="card-face text-xl font-medium leading-relaxed text-white"
+        >
           {showAnswer ? cards[index].answer : cards[index].question}
         </p>
         {!showAnswer && (
@@ -499,7 +528,12 @@ function QuizActivity({
   const answer = (opt: string) => {
     if (selected) return;
     setSelected(opt);
-    if (opt === q.correct) setScore(score + 1);
+    if (opt === q.correct) {
+      setScore(score + 1);
+      sfx.correct();
+    } else {
+      sfx.wrong();
+    }
   };
 
   const next = async () => {
@@ -508,16 +542,23 @@ function QuizActivity({
       setSelected(null);
     } else {
       setFinished(true);
-      // El examen final alimenta el Readiness Score
-      if (isFinal) {
+      // Tanto el mini quiz como el examen final alimentan el Readiness Score
+      const finalScore = score;
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) {
         fetch("/api/readiness", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
           body: JSON.stringify({
             userId,
             projectId: project.id,
             subject: project.title,
-            quizScore: score + (selected === q.correct ? 0 : 0),
+            quizScore: finalScore,
             quizTotal: questions.length,
             flashcardsReviewed: project.flashcards?.length || 0,
             totalFlashcards: project.flashcards?.length || 0,

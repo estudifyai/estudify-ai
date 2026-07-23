@@ -101,7 +101,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen bg-black">
       {/* ═══ SIDEBAR ═══ */}
       <aside
-        className={`sticky top-0 flex h-screen flex-col border-r border-[rgba(255,255,255,0.07)] bg-[#050507] transition-all duration-300 ${
+        className={`relative sticky top-0 flex h-screen flex-col border-r border-[rgba(255,255,255,0.07)] bg-[#050507] transition-all duration-300 ${
           collapsed ? "w-[72px]" : "w-[260px]"
         }`}
       >
@@ -132,10 +132,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <button
             onClick={() => setCollapsed(!collapsed)}
             className={`rounded-lg p-1.5 text-[#6a6a72] transition hover:bg-[rgba(255,255,255,0.05)] hover:text-white ${
-              collapsed ? "hidden" : ""
+              collapsed
+                ? "absolute -right-3 top-6 z-20 border border-[rgba(255,255,255,0.1)] bg-[#0a0a0c]"
+                : ""
             }`}
+            title={collapsed ? "Expandir menú" : "Colapsar menú"}
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft
+              className={`h-4 w-4 transition-transform duration-300 ${
+                collapsed ? "rotate-180" : ""
+              }`}
+            />
           </button>
         </div>
 
