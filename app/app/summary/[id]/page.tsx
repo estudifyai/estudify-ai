@@ -5,11 +5,13 @@ import { useParams, useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
 import {
   ArrowLeft,
+  ArrowRight,
   BookOpen,
   GraduationCap,
   Copy,
   Check,
   Loader2,
+  Sparkles,
 } from "lucide-react";
 
 interface Project {
@@ -142,9 +144,24 @@ export default function SummaryPage() {
         {project.id !== "temp" && (
           <button
             onClick={() => router.push(`/app/learn/${project.id}`)}
-            className="btn-primary ml-auto inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px]"
+            className="group relative ml-auto inline-flex items-center gap-2.5 overflow-hidden rounded-full px-7 py-3.5 text-[14px] font-bold text-[#050507] transition-all duration-300 hover:scale-[1.03]"
+            style={{
+              background: "linear-gradient(135deg, #C3F73A, #7EE8C6, #5EC8E8)",
+              backgroundSize: "200% 100%",
+              boxShadow: "0 0 32px -8px rgba(126,232,198,0.55)",
+            }}
           >
+            <span
+              className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              style={{
+                background:
+                  "linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)",
+                animation: "shine-sweep 1.2s ease infinite",
+              }}
+            />
+            <Sparkles className="h-4 w-4" />
             Empezar camino de estudio
+            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
           </button>
         )}
       </div>
@@ -212,7 +229,17 @@ export default function SummaryPage() {
           </div>
 
           {/* Actions */}
-          <div className="mt-6 flex gap-3">
+          {project.id !== "temp" && (
+            <button
+              onClick={() => router.push(`/app/learn/${project.id}`)}
+              className="btn-primary mt-6 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-[14px]"
+            >
+              <Sparkles className="h-4 w-4" />
+              Empezar camino de estudio
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          )}
+          <div className="mt-3 flex gap-3">
             <button
               onClick={() => setActiveTab("flashcards")}
               disabled={project.flashcards.length === 0}

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
-import { TrendingUp, BookOpen, GraduationCap, FileText, Target } from "lucide-react";
+import { TrendingUp, BookOpen, GraduationCap, FileText, Target, Lock } from "lucide-react";
 
 interface ReadinessScore {
   id: string;
@@ -24,9 +25,11 @@ interface Project {
 }
 
 export default function ProgressPage() {
+  const router = useRouter();
   const [scores, setScores] = useState<ReadinessScore[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [plan, setPlan] = useState<"free" | "pro" | "team">("free");
 
   useEffect(() => {
     const load = async () => {
@@ -50,6 +53,15 @@ export default function ProgressPage() {
           .eq("user_id", uid)
           .order("created_at", { ascending: false }),
       ]);
+
+      const { data: planData } = await supabase
+        .from("user_plans")
+        .select("plan, status")
+        .eq("user_id", uid)
+        .maybeSingle();
+      if (planData?.status === "active" && planData.plan !== "free") {
+        setPlan(planData.plan);
+      }
 
       setScores(scoresRes.data || []);
       setProjects(projectsRes.data || []);
@@ -187,11 +199,17 @@ export default function ProgressPage() {
 
       {scores[0]?.topic_breakdown &&
         Object.keys(scores[0].topic_breakdown).length > 0 && (
-          <div className="app-reveal app-reveal-2 surface-panel mb-8 p-7">
+          <div className="app-reveal app-reveal-2 surface-panel relative mb-8 p-7">
             <h2 className="mono mb-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6a6a72]">
               § Dominio por tema
             </h2>
-            <div className="space-y-4">
+            <div
+              className={`space-y-4 ${
+                plan === "free"
+                  ? "pointer-events-none select-none blur-md"
+                  : ""
+              }`}
+            >
               {Object.entries(scores[0].topic_breakdown)
                 .map(([topic, s]) => ({
                   topic,
@@ -225,10 +243,29 @@ export default function ProgressPage() {
                   </div>
                 ))}
             </div>
-            <p className="mt-5 text-[12px] text-[#6a6a72]">
+            <p
+              className={`mt-5 text-[12px] text-[#6a6a72] ${
+                plan === "free" ? "pointer-events-none select-none blur-md" : ""
+              }`}
+            >
               Los temas en rojo son tu prioridad. Repásalos en el camino de
               estudio.
             </p>
+
+            {plan === "free" && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-[20px] bg-black/40 backdrop-blur-[2px]">
+                <Lock className="h-6 w-6 text-[#C3F73A]" />
+                <p className="text-[14px] font-medium text-white">
+                  Descubre tus temas débiles con Pro
+                </p>
+                <button
+                  onClick={() => router.push("/app/account")}
+                  className="btn-primary rounded-full px-5 py-2 text-[12px]"
+                >
+                  Mejorar a Pro — $199 MXN/mes
+                </button>
+              </div>
+            )}
           </div>
         )}
 

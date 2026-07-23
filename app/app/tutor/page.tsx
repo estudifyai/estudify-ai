@@ -132,7 +132,7 @@ export default function TutorPage() {
       </div>
 
       {/* Chat */}
-      <div className="app-reveal app-reveal-2 surface-panel flex-1 overflow-y-auto">
+      <div className="app-reveal app-reveal-2 surface-panel min-h-0 flex-1 !overflow-y-auto">
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center px-8 py-10">
             <div className="relative mb-7">

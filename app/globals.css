@@ -449,3 +449,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .node-just-done, .card-face, .answer-shake { animation: none; }
 }
+
+@keyframes shine-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}

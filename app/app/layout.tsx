@@ -37,6 +37,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
   const [activePath, setActivePath] = useState("/app");
+  const [materialsUsed, setMaterialsUsed] = useState(0);
 
   useEffect(() => {
     const getUser = async () => {
@@ -49,6 +50,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       }
       setUser(session.user);
       setLoading(false);
+
+      const monthStart = new Date();
+      monthStart.setDate(1);
+      monthStart.setHours(0, 0, 0, 0);
+      const { count } = await supabase
+        .from("projects")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", session.user.id)
+        .gte("created_at", monthStart.toISOString());
+      setMaterialsUsed(count || 0);
 
       // Redirect a onboarding si es primera vez
       const onboardingDone = localStorage.getItem("estudify_onboarding_done");
@@ -187,7 +198,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <span className="text-[12px] font-semibold text-white">Plan Free</span>
             </div>
             <p className="mt-1.5 text-[11px] text-[#6a6a72]">
-              3 resúmenes restantes este mes.
+              {Math.max(0, 3 - materialsUsed)} de 3 materiales restantes este mes.
             </p>
             <a
               href="/app/account"

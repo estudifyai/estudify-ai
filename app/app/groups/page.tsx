@@ -46,7 +46,16 @@ export default function GroupsPage() {
 
   const loadGroups = async (uid: string) => {
     setLoading(true);
-    const res = await fetch(`/api/groups?userId=${uid}`);
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      setLoading(false);
+      return;
+    }
+    const res = await fetch(`/api/groups?userId=${uid}`, {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
     const data = await res.json();
     setGroups(data.groups || []);
     setLoading(false);
@@ -57,9 +66,20 @@ export default function GroupsPage() {
     setActionLoading(true);
     setError("");
 
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      setActionLoading(false);
+      return;
+    }
+
     const res = await fetch("/api/groups", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
       body: JSON.stringify({
         action: "create",
         userId,
@@ -84,9 +104,20 @@ export default function GroupsPage() {
     setActionLoading(true);
     setError("");
 
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      setActionLoading(false);
+      return;
+    }
+
     const res = await fetch("/api/groups", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
       body: JSON.stringify({
         action: "join",
         userId,

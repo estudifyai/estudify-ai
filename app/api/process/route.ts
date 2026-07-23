@@ -76,6 +76,24 @@ export async function POST(request: NextRequest) {
 
     const userId = user.id;
 
+    const { getUserPlan, countMaterialsThisMonth, FREE_MATERIALS_LIMIT } =
+      await import("@/app/lib/plan");
+
+    const plan = await getUserPlan(supabase, userId);
+    if (plan === "free") {
+      const used = await countMaterialsThisMonth(supabase, userId);
+      if (used >= FREE_MATERIALS_LIMIT) {
+        return NextResponse.json(
+          {
+            error: "LIMIT_REACHED",
+            message:
+              "Alcanzaste tus 3 materiales del mes. Mejora a Pro para materiales ilimitados.",
+          },
+          { status: 402 }
+        );
+      }
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     const textInput = formData.get("text") as string | null;

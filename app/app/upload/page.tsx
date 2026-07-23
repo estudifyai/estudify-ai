@@ -104,7 +104,14 @@ export default function UploadPage() {
         body: formData,
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error procesando el material.");
+      if (!res.ok) {
+        if (data.error === "LIMIT_REACHED") {
+          setError(data.message);
+          setTimeout(() => router.push("/app/account"), 2500);
+          return;
+        }
+        throw new Error(data.error || "Error procesando el material.");
+      }
 
       if (data.id) {
         router.push(`/app/summary/${data.id}`);

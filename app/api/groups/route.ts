@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+function supabaseAsUser(token: string) {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { global: { headers: { Authorization: `Bearer ${token}` } } }
+  );
+}
 
 function generateJoinCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -17,6 +20,10 @@ function generateJoinCode(): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const token = (request.headers.get("authorization") || "").replace("Bearer ", "");
+    if (!token) return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    const supabase = supabaseAsUser(token);
+
     const { action, userId, groupName, joinCode, groupId } = await request.json();
 
     if (!userId) {
@@ -135,6 +142,10 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const token = (request.headers.get("authorization") || "").replace("Bearer ", "");
+    if (!token) return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    const supabase = supabaseAsUser(token);
+
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
 
