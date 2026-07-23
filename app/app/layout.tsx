@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase";
+import { computeStreak, localISO } from "../lib/streak";
 import {
   LayoutDashboard,
   Upload,
@@ -17,11 +18,13 @@ import {
   Users,
   Swords,
   Crown,
+  Flame,
 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/app" },
+  { icon: Flame, label: "Repaso diario", href: "/app/review" },
   { icon: Upload, label: "Subir material", href: "/app/upload" },
   { icon: BookOpen, label: "Flashcards", href: "/app/flashcards" },
   { icon: GraduationCap, label: "Exámenes", href: "/app/exams" },
@@ -40,6 +43,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [activePath, setActivePath] = useState("/app");
   const [materialsUsed, setMaterialsUsed] = useState(0);
   const [plan, setPlan] = useState<"free" | "pro" | "team">("free");
+  const [streak, setStreak] = useState(0);
+  const [reviewedToday, setReviewedToday] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -71,6 +76,29 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       if (planData?.status === "active" && planData.plan !== "free") {
         setPlan(planData.plan as "pro" | "team");
       }
+
+      const { data: dailyData } = await supabase
+        .from("daily_reviews")
+        .select("review_date")
+        .eq("user_id", session.user.id)
+        .order("review_date", { ascending: false })
+        .limit(90);
+      const dates = (dailyData || []).map((d: any) => d.review_date);
+      setStreak(computeStreak(dates));
+      setReviewedToday(dates.includes(localISO()));
+
+      // Registra/actualiza el perfil visible para leaderboards
+      await supabase.from("profiles").upsert(
+        {
+          id: session.user.id,
+          display_name:
+            session.user.user_metadata?.full_name ||
+            session.user.email?.split("@")[0] ||
+            "Estudiante",
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "id" }
+      );
 
       // Redirect a onboarding si es primera vez
       const onboardingDone = localStorage.getItem("estudify_onboarding_done");
@@ -200,6 +228,35 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
+
+        {/* Racha */}
+        {!collapsed && (
+          <button
+            onClick={() => router.push("/app/review")}
+            className="mx-3 mb-2 flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition"
+            style={{
+              borderColor: reviewedToday
+                ? "rgba(255,159,64,0.25)"
+                : "rgba(255,255,255,0.07)",
+              background: reviewedToday
+                ? "rgba(255,159,64,0.07)"
+                : "rgba(255,255,255,0.02)",
+            }}
+          >
+            <Flame
+              className="h-4 w-4 flex-shrink-0"
+              style={{ color: reviewedToday ? "#ff9f40" : "#6a6a72" }}
+            />
+            <div className="min-w-0">
+              <p className="text-[12px] font-semibold text-white">
+                {streak} {streak === 1 ? "día" : "días"} de racha
+              </p>
+              <p className="text-[11px] text-[#6a6a72]">
+                {reviewedToday ? "Repaso de hoy hecho" : "Repasa para mantenerla"}
+              </p>
+            </div>
+          </button>
+        )}
 
         {/* Plan badge */}
         {!collapsed &&

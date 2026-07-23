@@ -137,10 +137,63 @@ export default function GroupsPage() {
     setActionLoading(false);
   };
 
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [board, setBoard] = useState<
+    { name: string; score: number; isMe: boolean }[]
+  >([]);
+  const [boardLoading, setBoardLoading] = useState(false);
+
   const copyCode = (code: string, id: string) => {
     navigator.clipboard.writeText(code);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const loadBoard = async (groupId: string) => {
+    if (openGroup === groupId) {
+      setOpenGroup(null);
+      return;
+    }
+    setOpenGroup(groupId);
+    setBoardLoading(true);
+
+    const { data: members } = await supabase
+      .from("group_members")
+      .select("user_id")
+      .eq("group_id", groupId);
+
+    const ids = (members || []).map((m: any) => m.user_id);
+    if (ids.length === 0) {
+      setBoard([]);
+      setBoardLoading(false);
+      return;
+    }
+
+    const [profRes, scoreRes] = await Promise.all([
+      supabase.from("profiles").select("id, display_name").in("id", ids),
+      supabase
+        .from("readiness_scores")
+        .select("user_id, score, created_at")
+        .in("user_id", ids)
+        .order("created_at", { ascending: false }),
+    ]);
+
+    const best = new Map<string, number>();
+    (scoreRes.data || []).forEach((s: any) => {
+      if (!best.has(s.user_id)) best.set(s.user_id, s.score);
+    });
+
+    const rows = ids.map((id: string) => ({
+      name:
+        (profRes.data || []).find((p: any) => p.id === id)?.display_name ||
+        "Estudiante",
+      score: best.get(id) ?? 0,
+      isMe: id === userId,
+    }));
+    rows.sort((a, b) => b.score - a.score);
+
+    setBoard(rows);
+    setBoardLoading(false);
   };
 
   if (loading) {
@@ -284,51 +337,117 @@ export default function GroupsPage() {
       {groups.length > 0 ? (
         <div className="space-y-3">
           {groups.map((g) => (
-            <div
-              key={g.id}
-              className="flex items-center justify-between rounded-2xl border border-[rgba(255,255,255,0.07)] bg-[#0a0a0c] p-6 transition hover:border-[rgba(255,255,255,0.14)]"
-            >
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[rgba(195,247,58,0.15)] to-[rgba(94,200,232,0.15)]">
-                  <Users className="h-5 w-5 text-[#C3F73A]" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="text-[15px] font-medium text-white">
-                      {g.name}
-                    </p>
-                    {g.role === "owner" && (
-                      <Crown className="h-3.5 w-3.5 text-[#C3F73A]" />
-                    )}
+            <div key={g.id}>
+              <div
+                onClick={() => loadBoard(g.id)}
+                className="flex cursor-pointer items-center justify-between rounded-2xl border border-[rgba(255,255,255,0.07)] bg-[#0a0a0c] p-6 transition hover:border-[rgba(255,255,255,0.14)]"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[rgba(195,247,58,0.15)] to-[rgba(94,200,232,0.15)]">
+                    <Users className="h-5 w-5 text-[#C3F73A]" />
                   </div>
-                  <p className="mt-0.5 text-[12px] text-[#6a6a72]">
-                    {g.member_count}{" "}
-                    {g.member_count === 1 ? "miembro" : "miembros"} · Creado{" "}
-                    {new Date(g.created_at).toLocaleDateString("es-MX", {
-                      day: "numeric",
-                      month: "short",
-                    })}
-                  </p>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-[15px] font-medium text-white">
+                        {g.name}
+                      </p>
+                      {g.role === "owner" && (
+                        <Crown className="h-3.5 w-3.5 text-[#C3F73A]" />
+                      )}
+                    </div>
+                    <p className="mt-0.5 text-[12px] text-[#6a6a72]">
+                      {g.member_count}{" "}
+                      {g.member_count === 1 ? "miembro" : "miembros"} · Creado{" "}
+                      {new Date(g.created_at).toLocaleDateString("es-MX", {
+                        day: "numeric",
+                        month: "short",
+                      })}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="hidden items-center gap-2 rounded-lg border border-[rgba(255,255,255,0.07)] bg-[rgba(255,255,255,0.02)] px-3 py-2 sm:flex">
+                    <span className="font-mono text-[13px] tracking-wider text-[#8a8a93]">
+                      {g.join_code}
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        copyCode(g.join_code, g.id);
+                      }}
+                      className="text-[#6a6a72] transition hover:text-white"
+                    >
+                      {copiedId === g.id ? (
+                        <Check className="h-3.5 w-3.5 text-[#C3F73A]" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="hidden items-center gap-2 rounded-lg border border-[rgba(255,255,255,0.07)] bg-[rgba(255,255,255,0.02)] px-3 py-2 sm:flex">
-                  <span className="font-mono text-[13px] tracking-wider text-[#8a8a93]">
-                    {g.join_code}
-                  </span>
-                  <button
-                    onClick={() => copyCode(g.join_code, g.id)}
-                    className="text-[#6a6a72] transition hover:text-white"
-                  >
-                    {copiedId === g.id ? (
-                      <Check className="h-3.5 w-3.5 text-[#C3F73A]" />
-                    ) : (
-                      <Copy className="h-3.5 w-3.5" />
-                    )}
-                  </button>
+              {openGroup === g.id && (
+                <div className="surface-panel mt-2 p-6">
+                  <h4 className="mono mb-4 text-[10px] uppercase tracking-[0.2em] text-[#6a6a72]">
+                    § Ranking por Readiness
+                  </h4>
+                  {boardLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-[#5EC8E8]" />
+                  ) : (
+                    <div className="space-y-2">
+                      {board.map((row, i) => (
+                        <div
+                          key={i}
+                          className={`flex items-center gap-4 rounded-xl px-4 py-3 ${
+                            row.isMe
+                              ? "border border-[rgba(195,247,58,0.25)] bg-[rgba(195,247,58,0.06)]"
+                              : ""
+                          }`}
+                        >
+                          <span
+                            className="editorial w-8 text-2xl"
+                            style={{
+                              color:
+                                i === 0
+                                  ? "#C3F73A"
+                                  : i === 1
+                                  ? "#7EE8C6"
+                                  : i === 2
+                                  ? "#5EC8E8"
+                                  : "#4a4a52",
+                            }}
+                          >
+                            {i + 1}
+                          </span>
+                          <span className="flex-1 text-[14px] text-white">
+                            {row.name}
+                            {row.isMe && (
+                              <span className="mono ml-2 text-[10px] uppercase tracking-wider text-[#C3F73A]">
+                                tú
+                              </span>
+                            )}
+                          </span>
+                          <div className="h-1.5 w-24 overflow-hidden rounded-full bg-[rgba(255,255,255,0.06)]">
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${row.score}%`,
+                                background:
+                                  "linear-gradient(90deg, #C3F73A, #5EC8E8)",
+                              }}
+                            />
+                          </div>
+                          <span className="mono w-12 text-right text-[13px] font-semibold text-white">
+                            {row.score}%
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
             </div>
           ))}
         </div>
